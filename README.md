@@ -8,13 +8,14 @@ Staci is not about replacing you're existing wife__ I mean system. Rather, Staci
 ## Counter Example
 Need to define some `state`? Cool:
 ```html
-<!-- Enables the use of target and trigger attributes in <script> -->
-<st-signal name="count" value="0" target="#current-count.text;"></st-state>
+<st-signal name="count" value="0" target="#current-count.text;#current-count-again.text"></st-state>
 
-<script target="#increment-button" trigger="click">
+<script target="#increment-button;#another-increment-button" trigger="click">
     staci.setState("count", staci.getState("count") + 1)
 </script>
 
 <p id="current-count"></p>
+<p id="current-count-again"></p>
 <button id="increment-button">Increment</button>
+<button id="another-increment-button">Increment Again</button>
 ```
