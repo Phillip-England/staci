@@ -33,3 +33,11 @@ func gtmlSlot(contentFunc func() string) string {
 return contentFunc()
 }
 
+func Layout(title string) string {
+	var builder strings.Builder
+	builder.WriteString(`<html _component="Layout" _id="0"><head><title>`)
+	builder.WriteString(title)
+	builder.WriteString(`</title></head><body><h1>Hello World!</h1></body></html>`)
+	return builder.String()
+}
+
