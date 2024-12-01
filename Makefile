@@ -5,4 +5,4 @@ tw:
 	tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
 
 bundle:
-	bun build ./client/staci.js --outdir ./static/js
+	bun build ./client/index.js --outdir ./static/js --watch

@@ -8,8 +8,8 @@ Staci is not about replacing you're existing wife__ I mean system. Rather, Staci
 ## Counter Example
 Need to define some `state`? Cool:
 ```html
-<st-signal name="count" value="0"></st-signal>
 <script>
+    staci.signal("count", 0)
     staci.event("increment-count", () => {
         let count = staci.getSignal('count');
         count.set(count.val()+1);

@@ -3,7 +3,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta charset="UTF-8">
         <link rel="stylesheet" href="/static/css/output.css">
-        <script src="/static/js/staci.js"></script>
+        <script src="/static/js/index.js"></script>
         <title>$prop("title")</title>
     </head>
     <body>
@@ -15,8 +15,8 @@
         </div>
         
         <div class="p-4 flex gap-2 flex-col">
-            <st-signal name="count" value="0"></st-signal>
             <script>
+                staci.signal("count", 0);
                 staci.event("increment-count", () => {
                     let count = staci.getSignal('count');
                     count.set(count.val()+1);
