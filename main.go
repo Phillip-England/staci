@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"staci/src/components"
+	"staci/server/components"
 
 	"github.com/Phillip-England/vbf"
 )

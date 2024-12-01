@@ -19,11 +19,11 @@
             <script>
                 staci.event("increment-count", () => {
                     let count = staci.getSignal('count');
-                    count.set(count.val()+1)
+                    count.set(count.val()+1);
                 });
             </script>
             <h2 class="text-xl font-bold">Counter Example</h2>
-            <p id="current-count">{% count %}</p>
+            <p id="current-count">{{ count }}</p>
             <button id="increment-button" st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button>
         </div>
 
