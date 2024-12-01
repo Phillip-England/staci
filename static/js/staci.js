@@ -6,6 +6,43 @@ Codebase Rules
 */
 
 
+
+class Everest {
+
+    static throttle(func, limit) {
+        let lastFunc;
+        let lastRan;
+    
+        return function (...args) {
+            const context = this;
+            if (!lastRan) {
+                func.apply(context, args);
+                lastRan = Date.now();
+            } else {
+                clearTimeout(lastFunc);
+                lastFunc = setTimeout(() => {
+                    if (Date.now() - lastRan >= limit) {
+                        func.apply(context, args);
+                        lastRan = Date.now();
+                    }
+                }, limit - (Date.now() - lastRan));
+            }
+        };
+    }
+
+    static debounce(func, delay) {
+        let timeout;
+    
+        return function (...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
+}
+
+
 class Dom {
 
     static getDirectTextContent(element) {
@@ -90,6 +127,10 @@ class Purse {
         return out;
     }
 
+    static removeFromArray(array, ...valuesToRemove) {
+        return array.filter(item => !valuesToRemove.includes(item));
+    }
+
 }
 
 class Signal {
@@ -132,15 +173,69 @@ class Staci {
         this.repo = "https://github.com/phillip-england/staci"
         this.events = {} 
         this.signals = {}
+        this.eventPairs = [
+            ['st-click', 'click'],
+            ['st-dblclick', 'dblclick'],
+            ['st-mouseup', 'mouseup'],
+            ['st-mousedown', 'mousedown'],
+            ['st-mousemove', 'mousemove'],
+            ['st-mouseenter', 'mouseenter'],
+            ['st-mouseleave', 'mouseleave'],
+            ['st-keydown', 'keydown'],
+            ['st-keypress', 'keypress'],
+            ['st-keyup', 'keyup'],
+            ['st-focus', 'focus'],
+            ['st-blur', 'blur'],
+            ['st-submit', 'submit'],
+            ['st-change', 'change'],
+            ['st-input', 'input'],
+            ['st-focusin', 'focusin'],
+            ['st-focusout', 'focusout'],
+            ['st-select', 'select'],
+            ['st-resize', 'resize'],
+            ['st-scroll', 'scroll'],
+            ['st-wheel', 'wheel'],
+            ['st-touchstart', 'touchstart'],
+            ['st-touchend', 'touchend'],
+            ['st-touchmove', 'touchmove'],
+            ['st-touchcancel', 'touchcancel'],
+            ['st-pointerdown', 'pointerdown'],
+            ['st-pointerup', 'pointerup'],
+            ['st-pointermove', 'pointermove'],
+            ['st-pointerenter', 'pointerenter'],
+            ['st-pointerleave', 'pointerleave'],
+            ['st-pointercancel', 'pointercancel'],
+            ['st-contextmenu', 'contextmenu'],
+            ['st-wheel', 'wheel'],
+            ['st-drag', 'drag'],
+            ['st-dragstart', 'dragstart'],
+            ['st-dragend', 'dragend'],
+            ['st-dragover', 'dragover'],
+            ['st-dragenter', 'dragenter'],
+            ['st-dragleave', 'dragleave'],
+            ['st-drop', 'drop'],
+            ['st-input', 'input'],
+            ['st-keydown', 'keydown'],
+            ['st-keyup', 'keyup']
+        ];
         this.initOnLoad()
     }
 
     initOnLoad() {
         document.addEventListener("DOMContentLoaded", () => {
-            this.initEventsOfType("st-click", "click")
+            this.initAllEventTypes()
             this.initSignalTextPlaceholders()
             this.initSignalAttrPlaceholders()
         });
+    }
+
+    initAllEventTypes() {
+        Iter.map(this.eventPairs, (pair) => {
+            let stEvent = pair[0]
+            let htmlEvent = pair[1]
+            this.initEventsOfType(stEvent, htmlEvent)
+            return true
+        })
     }
 
     initEventsOfType(eventAttr, mapsTo) {
@@ -186,7 +281,27 @@ class Staci {
     initSignalAttrPlaceholders() {
         let allElms = document.querySelectorAll("*")
         Iter.map(allElms, (elm) => {
-            console.log(elm)
+            Iter.map(elm.attributes, (attr) => {
+                let attrKey = attr.name
+                let attrVal = attr.value
+                let placeholders = Purse.scanBetweenSubStrs(attrVal, "{{", "}}")
+                Iter.map(placeholders, (placeholder) => {
+                    let signalKey = placeholder.replace("{{", "").replace("}}", "").trim()
+                    let signal = staci.getSignal(signalKey)
+                    if (signal == null || signal == undefined) {
+                        console.error(`attempting to set signal values on a {{ }} placeholder, but 
+                        we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`)
+                    }
+                    attrVal = attrVal.replace(placeholder, signal.val())
+                    elm.setAttribute(attrKey, attrVal)
+                    signal.subscribe((oldVal, newVal) => {
+                        attrVal = attrVal.replace(oldVal, newVal)
+                        elm.setAttribute(attrKey, attrVal)
+                    })
+                    return true
+                })
+                return true
+            })
             // let text = Dom.getDirectTextContent(elm)
             // let placeholders = Purse.scanBetweenSubStrs(text, "{%", "%}")
             // Iter.map(placeholders, (placeholder) => {

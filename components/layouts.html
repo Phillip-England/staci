@@ -14,7 +14,7 @@
             <p class="text-sm">Come visit sometime.. 💄</p>
         </div>
         
-        <div class="p-4 flex gap-2 flex-col">
+        <div class="p-4 flex gap-4 flex-col">
             <script>
                 staci.signal("count", 0);
                 staci.event("increment-count", () => {
@@ -22,10 +22,35 @@
                     count.set(count.val()+1);
                 });
             </script>
-            <h2 class="text-xl font-bold">Counter Example</h2>
-            <p id="current-count">{{ count }}</p>
-            <button id="increment-button" st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button>
+            <div class="flex flex-col gap-2">
+                <h2 class="text-xl font-bold">Counter Example</h2>
+                <p class="text-sm">This example demonstrates how to use signals to update the text content of an element.</p>
+            </div>
+            <p>{{ count }}</p>
+            <button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button>
         </div>
+
+        <div class="p-4 flex gap-4 flex-col">
+            <script>
+                staci.signal("color", "bg-blue-500");
+                staci.event("set-random-color", () => {
+                    let color = staci.getSignal("color");
+                    let colors = ['bg-blue-500', 'bg-red-500', 'bg-yellow-500'];
+                    colors = Purse.removeFromArray(colors, color.val());
+                    let randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    color.set(randomColor);
+                });
+            </script>
+            <div class="flex flex-col gap-2">
+                <h2 class="text-xl font-bold">Random Color Example</h2>
+                <p class="text-sm">This example demonstrates how signals can be used within element attributes.</p>
+            </div>
+            <p class="{{ color }} p-4 rounded text-sm" st-mousemove="set-random-color">Enter your mouse here to change the class! I have the class {{ color }}</p>
+            <!-- <button st-click="set-random-color" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Randomize</button> -->
+        </div>
+
+
+
 
     </body>
 </html>
