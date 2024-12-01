@@ -1,12 +1,17 @@
 # Staci
-A Suite of Web Components Which Add Behavior to Static HTML 💄
+Lightweight, reactive signals for dynamic web interactions 💄
 
-Staci is all about *complimenting* existing HTML. Simply drop in a few web components, add some attributes, and let Staci do all the work 🤤.
+## Use-Case
+`staci` is all about *complimenting* existing HTML. Other reactive solutions attempt to dictate the way you write your HTML. When you want to generate HTML, you must do so **with the framework**.
 
-Staci is not about replacing you're existing wife__ I mean system. Rather, Staci intends to join-in where needed. She can be adopted incrementally overtime.
+`staci` is different. She is not about replacing you're existing wife__ I mean system. Rather, `staci` intends to join-in where needed and can be adopted incrementally overtime.
+
+
+## Installation
+`staci` is not bundled.. yet. I will get to that. For now, simply copy `./static/js/staci.js` and paste it into your own project.
+
 
 ## Counter Example
-Need to define some `state`? Cool:
 ```html
 <script>
     staci.signal("count", 0)

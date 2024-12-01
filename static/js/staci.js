@@ -131,7 +131,7 @@ class Staci {
         this.version = "0.0.1"
         this.repo = "https://github.com/phillip-england/staci"
         this.events = {} 
-        this.states = {}
+        this.signals = {}
         this.initOnLoad()
     }
 
@@ -211,7 +211,7 @@ class Staci {
     }
 
     signal(key, val) {
-        this.states[key] = new Signal(val)
+        this.signals[key] = new Signal(val)
     }
 
     getEvent(key) {
@@ -234,21 +234,21 @@ class Staci {
     }
 
     getSignal(key) {
-        let foundState = false
-        let state = null
-        Iter.mapObj(this.states, (innerKey, val) => {
+        let foundSignal = false
+        let signal = null
+        Iter.mapObj(this.signals, (innerKey, val) => {
             if (key == innerKey) {
-                foundState = true
-                state = val
+                foundSignal = true
+                signal = val
                 return false
             }
             return true
         })
-        if (foundState == false) {
-            console.error(`attempted to access state value named ${key} when one does not exist`)
+        if (foundSignal == false) {
+            console.error(`attempted to access signal named ${key} when one does not exist`)
             return null
         }
-        return state
+        return signal
     }
 
 }

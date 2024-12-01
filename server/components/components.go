@@ -41,7 +41,7 @@ func gtmlEscape(input string) string {
 func Layout(title string) string {
 	layout := func() string {
 		var layoutBuilder strings.Builder
-		layoutBuilder.WriteString(`<html _component="Layout" _id="0"><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta charset="UTF-8"/><link rel="stylesheet" href="/static/css/output.css"/><script src="/static/js/index.js"></script><title>`)
+		layoutBuilder.WriteString(`<html _component="Layout" _id="0"><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta charset="UTF-8"/><link rel="stylesheet" href="/static/css/output.css"/><script src="/static/js/staci.js"></script><title>`)
 		layoutBuilder.WriteString(title)
 		layoutBuilder.WriteString(`</title></head><body><div class="p-4 flex flex-col gap-2 border-b"><h1 class="font-bold text-2xl">Staci</h1><p class="text-sm">Come visit sometime.. 💄</p></div><div class="p-4 flex gap-2 flex-col"><script>staci.signal("count", 0);staci.event("increment-count", () => {let count = staci.getSignal('count');count.set(count.val()+1);});</script><h2 class="text-xl font-bold">Counter Example</h2><p id="current-count">{{ count }}</p><button id="increment-button" st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button></div></body></html>`)
 		return layoutBuilder.String()
