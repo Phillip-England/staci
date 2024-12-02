@@ -53,8 +53,8 @@
 		<h2 class="text-xl font-bold">Random Color Example</h2>
 		<p class="text-sm">This example demonstrates how signals can be used within element attributes.</p>
 	</div>
-	<p class="{{ color }} p-4 rounded text-sm" st-mousemove="set-random-color" st-throttle="40">Enter your mouse here to change the class! I have the class {{ color }}</p>
-	<p class="text-sm">The above example is throttled so the event only fires once every 40ms 🥰</p>
+	<p class="{{ color }} p-4 rounded text-sm" st-mousemove="set-random-color" st-throttle="80">Enter your mouse here to change the class! I have the class {{ color }}</p>
+	<p class="text-sm">The above example is throttled so the event only fires once every 80ms 🥰</p>
 </div>
 
 <div _component="DebounceFormExample" class="p-4 flex gap-4 flex-col">
@@ -67,11 +67,11 @@
             let err = staci.getSignal("error");
             let display = staci.getSignal("errorDisplay");
             if (value == "stacismom") {
-                err.set("great you did it!");
-                display.set("flex text-green-500");
+                err.set("great, you did it! 🦄");
+                display.set("flex text-green-700");
             } else {
                 err.set("the correct username is 'stacismom' you typed: '"+value+"'");
-                display.set("flex text-red-500");
+                display.set("flex text-red-700");
             }
 		});
 	</script>
