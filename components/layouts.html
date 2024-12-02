@@ -7,21 +7,30 @@
         <title>$prop("title")</title>
     </head>
     <body>
-		<StaciHeader></StaciHeader>
-		<CounterExample></CounterExample>
-		<RandomColorExample></RandomColorExample>
-		<DebounceFormExample></DebounceFormExample>
+        <div class="flex flex-col w-full items-center h-full">
+            <div class="flex flex-col xl:w-[50%] md:w-[80%] sm:w-[90%] w-full">
+                <StaciHeader></StaciHeader>
+                <div class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
+                    <h2 class="text-xl font-bold">What is Staci?</h2>
+                    <p class="text-sm">Because you asked.. 🐎</p>
+                    <p class="text-sm">Staci is a lightweight alternative to frameworks like React, Angular, or Vue.</p>
+                </div>
+                <CounterExample></CounterExample>
+                <RandomColorExample></RandomColorExample>
+                <DebounceFormExample></DebounceFormExample>
+            </div>
+        </div>
     </body>
 </html>
 
 
 
-<header _component="StaciHeader" class="p-4 flex flex-col gap-2 border-b">
+<header _component="StaciHeader" class="sm:m-2 p-4 flex flex-col gap-2 border bg-gray-100 sm:rounded">
 	<h1 class="font-bold text-2xl">Staci</h1>
 	<p class="text-sm">Come visit sometime.. 💄</p>
 </header>
 
-<div _component="CounterExample" class="p-4 flex gap-4 flex-col">
+<div _component="CounterExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
 	<script>
 		staci.signal("count", 0);
 		staci.event("increment-count", () => {
@@ -37,7 +46,7 @@
 	<button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button>
 </div>
 
-<div _component="RandomColorExample" class="p-4 flex gap-4 flex-col">
+<div _component="RandomColorExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
 	<script>
 		staci.signal("color", "bg-blue-200");
 		staci.event("set-random-color", () => {
@@ -57,7 +66,7 @@
 	<p class="text-sm">The above example is throttled so the event only fires once every 80ms 🥰</p>
 </div>
 
-<div _component="DebounceFormExample" class="p-4 flex gap-4 flex-col">
+<form _component="DebounceFormExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
 	<script>
         staci.signal("error", "I am hidden");
         staci.signal("errorDisplay", "invisible");
@@ -80,12 +89,10 @@
 		<p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.
 		</p>
 	</div>
-	<form class="flex flex-col gap-4 border rounded p-4">
-		<h2 class="text-lg font-bold">Login</h2>
-        <p class="{{ errorDisplay }} text-sm">{{ error }}</p>
-		<div class="flex flex-col gap-2">
-			<label class="text-sm">username</label>
-			<input type="text" class="border p-1 text-xs" st-input="validate-username" st-debounce="250" />
-		</div>
-	</form>
-</div>
+    <h2 class="text-lg font-bold">Login</h2>
+    <p class="{{ errorDisplay }} text-sm">{{ error }}</p>
+    <div class="flex flex-col gap-2">
+        <label class="text-sm">username</label>
+        <input type="text" class="border p-1 text-xs" st-input="validate-username" st-debounce="250" />
+    </div>
+</form>
