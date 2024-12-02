@@ -8,7 +8,7 @@ Lightweight, reactive signals for dynamic web interactions 💄
 
 
 ## Installation
-`staci` is not bundled.. yet. I will get to that. For now, simply copy `./static/js/staci.js` and paste it into your own project.
+`staci` is not bundled.. yet. I will get to that. For now, simply copy and paste [the code](https://github.com/Phillip-England/staci/blob/main/static/js/staci.js) into your project.
 
 
 ## Counter Example
