@@ -31,52 +31,52 @@ Lightweight, reactive signals for dynamic web interactions 💄
 
 ## Random Color Example (with throttle)
 ```html
-	<script>
-		staci.signal("color", "bg-blue-200");
-		staci.event("set-random-color", () => {
-			let color = staci.getSignal("color");
-			let colors = ["bg-blue-200", "bg-red-200", "bg-yellow-200"];
-			colors = Purse.removeFromArray(colors, color.val());
-			let randomColor =
-				colors[Math.floor(Math.random() * colors.length)];
-			color.set(randomColor);
-		});
-	</script>
-	
-    <h2>Random Color Example</h2>
-    <p>This example demonstrates how signals can be used within element attributes.</p>
-    <p class="{{ color }}" st-mousemove="set-random-color" st-throttle="80">Enter your mouse here to change the class! I have the class {{ color }}<p>
+<script>
+    staci.signal("color", "bg-blue-200");
+    staci.event("set-random-color", () => {
+        let color = staci.getSignal("color");
+        let colors = ["bg-blue-200", "bg-red-200", "bg-yellow-200"];
+        colors = Purse.removeFromArray(colors, color.val());
+        let randomColor =
+            colors[Math.floor(Math.random() * colors.length)];
+        color.set(randomColor);
+    });
+</script>
+
+<h2>Random Color Example</h2>
+<p>This example demonstrates how signals can be used within element attributes.</p>
+<p class="{{ color }}" st-mousemove="set-random-color" st-throttle="80">Enter your mouse here to change the class! I have the class {{ color }}<p>
 ```
 
 ## Form Validation Example (with debounce)
 ```html
-	<script>
-        staci.signal("error", "I am hidden");
-        staci.signal("errorDisplay", "invisible");
-		staci.event("validate-username", (e) => {
-            let input = e.target;
-            let value = input.value;
-            let err = staci.getSignal("error");
-            let display = staci.getSignal("errorDisplay");
-            if (value == "stacismom") {
-                err.set("great, you did it! 🦄");
-                display.set("flex text-green-700");
-            } else {
-                err.set("the correct username is 'stacismom' you typed: '"+value+"'");
-                display.set("flex text-red-700");
-            }
-		});
-	</script>
+<script>
+    staci.signal("error", "I am hidden");
+    staci.signal("errorDisplay", "invisible");
+    staci.event("validate-username", (e) => {
+        let input = e.target;
+        let value = input.value;
+        let err = staci.getSignal("error");
+        let display = staci.getSignal("errorDisplay");
+        if (value == "stacismom") {
+            err.set("great, you did it! 🦄");
+            display.set("flex text-green-700");
+        } else {
+            err.set("the correct username is 'stacismom' you typed: '"+value+"'");
+            display.set("flex text-red-700");
+        }
+    });
+</script>
 
-	<h2>Form Debounce Example</h2>
-	<p>This example demonstates how staci can be used to validate form fields with debouncing.</p>
-	<form>
-		<h2>Login</h2>
-        <p class="{{ errorDisplay }}">{{ error }}</p>
-		<div>
-			<label>username</label>
-			<input type="text" st-input="validate-username" st-debounce="250" />
-		</div>
-	</form>
+<h2>Form Debounce Example</h2>
+<p>This example demonstates how staci can be used to validate form fields with debouncing.</p>
+<form>
+    <h2>Login</h2>
+    <p class="{{ errorDisplay }}">{{ error }}</p>
+    <div>
+        <label>username</label>
+        <input type="text" st-input="validate-username" st-debounce="250" />
+    </div>
+</form>
 ```
 
