@@ -244,13 +244,13 @@ class Staci {
             let throttle = parseInt(elmThrottle);
             let currentEvents = elm.getAttribute("st-events");
             if (!currentEvents) {
-              elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
-              elm.setAttribute("st-events", eventAttr);
-            } else {
-              if (!currentEvents.includes(eventAttr)) {
                 elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
-                elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
-              }
+                elm.setAttribute("st-events", eventAttr);
+            } else {
+                if (!currentEvents.includes(eventAttr)) {
+                    elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
+                    elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+                }
             }
             return true;
           }
@@ -265,13 +265,13 @@ class Staci {
             let debounce = parseInt(elmDebounce);
             let currentEvents = elm.getAttribute("st-events");
             if (!currentEvents) {
-              elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
-              elm.setAttribute("st-events", eventAttr);
-            } else {
-              if (!currentEvents.includes(eventAttr)) {
                 elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
-                elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
-              }
+                elm.setAttribute("st-events", eventAttr);
+            } else {
+                if (!currentEvents.includes(eventAttr)) {
+                    elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
+                    elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+                }
             }
             return true;
           }
@@ -279,13 +279,13 @@ class Staci {
           if (!currentEvents) {
             elm.addEventListener(mapsTo, event);
 
-            elm.setAttribute("st-events", eventAttr);
+              elm.setAttribute("st-events", eventAttr);
           } else {
-            if (!currentEvents.includes(eventAttr)) {
-              elm.addEventListener(mapsTo, event);
+              if (!currentEvents.includes(eventAttr)) {
+                elm.addEventListener(mapsTo, event);
 
-              elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
-            }
+                  elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+              }
           }
 
           return true;
