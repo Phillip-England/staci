@@ -41,27 +41,44 @@ func gtmlEscape(input string) string {
 func Layout(title string) string {
 	layout := func() string {
 		var layoutBuilder strings.Builder
+		staciheaderPlaceholder1 := func() string {
+			return StaciHeader()
+		}
+		counterexamplePlaceholder2 := func() string {
+			return CounterExample()
+		}
+		randomcolorexamplePlaceholder3 := func() string {
+			return RandomColorExample()
+		}
+		debounceformexamplePlaceholder4 := func() string {
+			return DebounceFormExample()
+		}
 		layoutBuilder.WriteString(`<html _component="Layout" _id="0"><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta charset="UTF-8"/><link rel="stylesheet" href="/static/css/output.css"/><script src="/static/js/staci.js"></script><title>`)
 		layoutBuilder.WriteString(title)
-		layoutBuilder.WriteString(`</title></head><body><header _placeholder="Header" _id="1"></header><counterexample _placeholder="CounterExample" _id="2"></counterexample><randomcolorexample _placeholder="RandomColorExample" _id="3"></randomcolorexample><debounceformexample _placeholder="DebounceFormExample" _id="4"></debounceformexample><header _component="Header" class="p-4 flex flex-col gap-2 border-b" _placeholder="Header" _id="0"><h1 class="font-bold text-2xl">Staci</h1><p class="text-sm">Come visit sometime.. 💄</p></header><div _component="CounterExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("count", 0);staci.event("increment-count", () => {console.log("hit");let count = staci.getSignal("count");count.set(count.val() + 1);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Counter Example</h2><p class="text-sm">This example demonstrates how to use signals to update the text content of an element.</p></div><p class="text-sm">{{ count }}</p><button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button></div><div _component="RandomColorExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("color", "bg-blue-200");staci.event("set-random-color", () => {let color = staci.getSignal("color");let colors = ["bg-blue-200", "bg-red-200", "bg-yellow-200"];colors = Purse.removeFromArray(colors, color.val());let randomColor =colors[Math.floor(Math.random() * colors.length)];color.set(randomColor);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Random Color Example</h2><p class="text-sm">This example demonstrates how signals can be used within element attributes.</p></div><p class="{{ color }} p-4 rounded text-sm" st-mousemove="set-random-color" st-throttle="40">Enter your mouse here to change the class! I have the class {{ color }}</p><p class="text-sm">The above example is throttled so the event only fires once every 40ms 🥰</p></div><div _component="DebounceFormExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("username", "");staci.event("validate-username", () => {let username = staci.getSignal("username")color.set(randomColor);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Form Throttle Example</h2><p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.</p></div><form class="flex flex-col gap-4 border rounded p-4"><h2 class="text-lg font-bold">Login</h2><div class="flex flex-col gap-2"><label class="text-sm">username</label><input type="text" class="border p-1 text-xs"/></div><div class="flex flex-col gap-2"><label class="text-sm">password</label><input type="password" class="border p-1 text-xs"/></div></form></div></body></html>`)
+		layoutBuilder.WriteString(`</title></head><body>`)
+		layoutBuilder.WriteString(staciheaderPlaceholder1())
+		layoutBuilder.WriteString(counterexamplePlaceholder2())
+		layoutBuilder.WriteString(randomcolorexamplePlaceholder3())
+		layoutBuilder.WriteString(debounceformexamplePlaceholder4())
+		layoutBuilder.WriteString(`</body></html>`)
 		return layoutBuilder.String()
 	}
 	return gtmlEscape(layout())
 }
 
-func Header() string {
-	headerPlaceholder0 := func() string {
-		var headerBuilder strings.Builder
-		headerBuilder.WriteString(`<header _component="Header" class="p-4 flex flex-col gap-2 border-b" _placeholder="Header" _id="0"><h1 class="font-bold text-2xl">Staci</h1><p class="text-sm">Come visit sometime.. 💄</p></header>`)
-		return headerBuilder.String()
+func StaciHeader() string {
+	staciheader := func() string {
+		var staciheaderBuilder strings.Builder
+		staciheaderBuilder.WriteString(`<header _component="StaciHeader" class="p-4 flex flex-col gap-2 border-b" _id="0"><h1 class="font-bold text-2xl">Staci</h1><p class="text-sm">Come visit sometime.. 💄</p></header>`)
+		return staciheaderBuilder.String()
 	}
-	return gtmlEscape(headerPlaceholder0())
+	return gtmlEscape(staciheader())
 }
 
 func CounterExample() string {
 	counterexample := func() string {
 		var counterexampleBuilder strings.Builder
-		counterexampleBuilder.WriteString(`<div _component="CounterExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("count", 0);staci.event("increment-count", () => {console.log("hit");let count = staci.getSignal("count");count.set(count.val() + 1);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Counter Example</h2><p class="text-sm">This example demonstrates how to use signals to update the text content of an element.</p></div><p class="text-sm">{{ count }}</p><button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button></div>`)
+		counterexampleBuilder.WriteString(`<div _component="CounterExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("count", 0);staci.event("increment-count", () => {let count = staci.getSignal("count");count.set(count.val() + 1);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Counter Example</h2><p class="text-sm">This example demonstrates how to use signals to update the text content of an element.</p></div><p class="text-sm">{{ count }}</p><button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button></div>`)
 		return counterexampleBuilder.String()
 	}
 	return gtmlEscape(counterexample())
@@ -79,7 +96,7 @@ func RandomColorExample() string {
 func DebounceFormExample() string {
 	debounceformexample := func() string {
 		var debounceformexampleBuilder strings.Builder
-		debounceformexampleBuilder.WriteString(`<div _component="DebounceFormExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("username", "");staci.event("validate-username", () => {let username = staci.getSignal("username")color.set(randomColor);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Form Throttle Example</h2><p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.</p></div><form class="flex flex-col gap-4 border rounded p-4"><h2 class="text-lg font-bold">Login</h2><div class="flex flex-col gap-2"><label class="text-sm">username</label><input type="text" class="border p-1 text-xs"/></div><div class="flex flex-col gap-2"><label class="text-sm">password</label><input type="password" class="border p-1 text-xs"/></div></form></div>`)
+		debounceformexampleBuilder.WriteString(`<div _component="DebounceFormExample" class="p-4 flex gap-4 flex-col" _id="0"><script>staci.signal("error", "I am hidden");staci.signal("errorDisplay", "invisible");staci.event("validate-username", (e) => {let input = e.target;let value = input.value;let err = staci.getSignal("error");let display = staci.getSignal("errorDisplay");if (value == "stacismom") {err.set("great you did it!");display.set("flex text-green-500");} else {err.set("the correct username is 'stacismom' you typed: '"+value+"'");display.set("flex text-red-500");}});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Form Debounce Example</h2><p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.</p></div><form class="flex flex-col gap-4 border rounded p-4"><h2 class="text-lg font-bold">Login</h2><p class="{{ errorDisplay }} text-sm">{{ error }}</p><div class="flex flex-col gap-2"><label class="text-sm">username</label><input type="text" class="border p-1 text-xs" st-input="validate-username" st-debounce="250"/></div></form></div>`)
 		return debounceformexampleBuilder.String()
 	}
 	return gtmlEscape(debounceformexample())

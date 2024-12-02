@@ -5,37 +5,22 @@ Codebase Rules
 
 // contains wrapper functions like throttle and debounce to wrap events
 class Everest {
-  static throttle(func, limit) {
-    let lastFunc;
-    let lastRan;
-
+  static throttle(func, delay) {
+    let lastTime = 0;
     return function (...args) {
-      const context = this;
-      if (!lastRan) {
-        func.apply(context, args);
-        lastRan = Date.now();
-      } else {
-        clearTimeout(lastFunc);
-        lastFunc = setTimeout(
-          () => {
-            if (Date.now() - lastRan >= limit) {
-              func.apply(context, args);
-              lastRan = Date.now();
-            }
-          },
-          limit - (Date.now() - lastRan),
-        );
+      const now = Date.now();
+      if (now - lastTime >= delay) {
+        lastTime = now;
+        func.apply(this, args);
       }
     };
   }
 
   static debounce(func, delay) {
     let timeout;
-
     return function (...args) {
-      const context = this;
       clearTimeout(timeout);
-      timeout = setTimeout(() => func.apply(context, args), delay);
+      timeout = setTimeout(() => func.apply(this, args), delay);
     };
   }
 }
@@ -57,8 +42,6 @@ class Dom {
     const updatedText = currentText.replace(placeholder, newValue);
     element.textContent = updatedText;
   }
-
-
 }
 
 // contains functions intended to be used to iterate over different types of data
@@ -259,7 +242,16 @@ class Staci {
               );
             }
             let throttle = parseInt(elmThrottle);
-            elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
+            let currentEvents = elm.getAttribute("st-events");
+            if (!currentEvents) {
+              elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
+              elm.setAttribute("st-events", eventAttr);
+            } else {
+              if (!currentEvents.includes(eventAttr)) {
+                elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
+                elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+              }
+            }
             return true;
           }
           let elmDebounce = elm.getAttribute("st-debounce");
@@ -271,11 +263,31 @@ class Staci {
               );
             }
             let debounce = parseInt(elmDebounce);
-            elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
+            let currentEvents = elm.getAttribute("st-events");
+            if (!currentEvents) {
+              elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
+              elm.setAttribute("st-events", eventAttr);
+            } else {
+              if (!currentEvents.includes(eventAttr)) {
+                elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
+                elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+              }
+            }
             return true;
           }
+          let currentEvents = elm.getAttribute("st-events");
+          if (!currentEvents) {
+            elm.addEventListener(mapsTo, event);
 
-          elm.addEventListener(mapsTo, event);
+            elm.setAttribute("st-events", eventAttr);
+          } else {
+            if (!currentEvents.includes(eventAttr)) {
+              elm.addEventListener(mapsTo, event);
+
+              elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+            }
+          }
+
           return true;
         });
         return true;
@@ -293,8 +305,10 @@ class Staci {
         let signalKey = placeholder.replace("{{", "").replace("}}", "").trim();
         let signal = staci.getSignal(signalKey);
         if (signal == null || signal == undefined) {
-          console.error(`attempting to set signal values on a {{ }} placeholder, but
-                    we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`);
+          console.error(
+            `attempting to set signal values on a {{ }} placeholder, but
+                    we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`,
+          );
         }
         Dom.replaceTextContent(elm, placeholder, signal.val());
         signal.subscribe((oldVal, newVal) => {
@@ -320,8 +334,10 @@ class Staci {
             .trim();
           let signal = staci.getSignal(signalKey);
           if (signal == null || signal == undefined) {
-            console.error(`attempting to set signal values on a {{ }} placeholder, but
-                        we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`);
+            console.error(
+              `attempting to set signal values on a {{ }} placeholder, but
+                        we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`,
+            );
           }
           attrVal = attrVal.replace(placeholder, signal.val());
           elm.setAttribute(attrKey, attrVal);

@@ -7,7 +7,7 @@
         <title>$prop("title")</title>
     </head>
     <body>
-		<Header></Header>
+		<StaciHeader></StaciHeader>
 		<CounterExample></CounterExample>
 		<RandomColorExample></RandomColorExample>
 		<DebounceFormExample></DebounceFormExample>
@@ -16,7 +16,7 @@
 
 
 
-<header _component="Header" class="p-4 flex flex-col gap-2 border-b">
+<header _component="StaciHeader" class="p-4 flex flex-col gap-2 border-b">
 	<h1 class="font-bold text-2xl">Staci</h1>
 	<p class="text-sm">Come visit sometime.. 💄</p>
 </header>
@@ -25,7 +25,6 @@
 	<script>
 		staci.signal("count", 0);
 		staci.event("increment-count", () => {
-			console.log("hit");
 			let count = staci.getSignal("count");
 			count.set(count.val() + 1);
 		});
@@ -60,27 +59,33 @@
 
 <div _component="DebounceFormExample" class="p-4 flex gap-4 flex-col">
 	<script>
-		staci.signal("username", "");
-		staci.event("validate-username", () => {
-			let username = staci.getSignal("username")
-
-			color.set(randomColor);
+        staci.signal("error", "I am hidden");
+        staci.signal("errorDisplay", "invisible");
+		staci.event("validate-username", (e) => {
+            let input = e.target;
+            let value = input.value;
+            let err = staci.getSignal("error");
+            let display = staci.getSignal("errorDisplay");
+            if (value == "stacismom") {
+                err.set("great you did it!");
+                display.set("flex text-green-500");
+            } else {
+                err.set("the correct username is 'stacismom' you typed: '"+value+"'");
+                display.set("flex text-red-500");
+            }
 		});
 	</script>
 	<div class="flex flex-col gap-2">
-		<h2 class="text-xl font-bold">Form Throttle Example</h2>
+		<h2 class="text-xl font-bold">Form Debounce Example</h2>
 		<p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.
 		</p>
 	</div>
 	<form class="flex flex-col gap-4 border rounded p-4">
 		<h2 class="text-lg font-bold">Login</h2>
+        <p class="{{ errorDisplay }} text-sm">{{ error }}</p>
 		<div class="flex flex-col gap-2">
 			<label class="text-sm">username</label>
-			<input type="text" class="border p-1 text-xs" />
-		</div>
-		<div class="flex flex-col gap-2">
-			<label class="text-sm">password</label>
-			<input type="password" class="border p-1 text-xs" />
+			<input type="text" class="border p-1 text-xs" st-input="validate-username" st-debounce="250" />
 		</div>
 	</form>
 </div>
