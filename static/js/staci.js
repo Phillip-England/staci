@@ -77,40 +77,45 @@ class Iter {
 
 // contains string parsing functions
 class Purse {
-  static scanBetweenSubStrs(s, start, end) {
-    const out = [];
-    let inSearch = false;
-    let searchStr = "";
-    let i = 0;
-    while (i < s.length) {
-      if (
-        !inSearch &&
-        i + start.length <= s.length &&
-        s.substring(i, i + start.length) === start
-      ) {
-        inSearch = true;
-        searchStr = start;
-        i += start.length;
-        continue;
-      }
-      if (inSearch) {
-        if (
-          i + end.length <= s.length &&
-          s.substring(i, i + end.length) === end
-        ) {
-          searchStr += end;
-          out.push(searchStr);
-          searchStr = "";
-          inSearch = false;
-          i += end.length;
-          continue;
+    static scanBetweenSubStrs(s, start, end) {
+        const out = [];
+        let inSearch = false;
+        let searchStr = "";
+        let i = 0;
+      
+        while (i < s.length) {
+          if (
+            !inSearch &&
+            i + start.length <= s.length &&
+            s.substring(i, i + start.length) === start &&
+            (i === 0 || s[i - 1] !== "\\") // Check for preceding escape character
+          ) {
+            inSearch = true;
+            searchStr = start;
+            i += start.length;
+            continue;
+          }
+      
+          if (inSearch) {
+            if (
+              i + end.length <= s.length &&
+              s.substring(i, i + end.length) === end
+            ) {
+              searchStr += end;
+              out.push(searchStr);
+              searchStr = "";
+              inSearch = false;
+              i += end.length;
+              continue;
+            }
+            searchStr += s[i];
+          }
+      
+          i++;
         }
-        searchStr += s[i];
+        return out;
       }
-      i++;
-    }
-    return out;
-  }
+      
 
   static removeFromArray(array, ...valuesToRemove) {
     return array.filter((item) => !valuesToRemove.includes(item));
@@ -213,6 +218,7 @@ class Staci {
       this.initAllEventTypes();
       this.initSignalTextPlaceholders();
       this.initSignalAttrPlaceholders();
+      this.initRemoveStaciIgnoreFromElements();
     });
   }
 
@@ -351,6 +357,17 @@ class Staci {
       });
       return true;
     });
+  }
+
+  initRemoveStaciIgnoreFromElements() {
+    let allElms = document.querySelectorAll("*");
+    Iter.map(allElms, (elm) => {
+        let text = Dom.getDirectTextContent(elm)
+        if (text.includes("\\\\")) {
+            Dom.replaceTextContent(elm, "\\\\", "")
+        }
+        return true
+    })
   }
 
   event(name, fn) {
