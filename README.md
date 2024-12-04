@@ -23,7 +23,7 @@ Lightweight, reactive signals for dynamic web interactions 💄
 
 <div>
     <h2>Counter Example</h2>
-    <p>\\{{ count }}</p>
+    <p>{{ count }}</p>
     <button st-click="increment-count">Increment</button>
 </div>
 ```
