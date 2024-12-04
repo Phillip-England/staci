@@ -11,23 +11,7 @@ Lightweight, reactive signals for dynamic web interactions 💄
 `staci` is not bundled.. yet. I will get to that. For now, simply copy and paste [the code](https://github.com/Phillip-England/staci/blob/main/static/js/staci.js) into your project.
 
 
-## Counter Example
-```html
-<script>
-    staci.signal("count", 0);
-    staci.event("increment-count", () => {
-        let count = staci.getSignal("count");
-        count.set(count.val() + 1);
-    });
-</script>
-
-<div>
-    <h2>Counter Example</h2>
-    <p>This example demonstrates how to use signals to update the text content of an element<p>
-</div>
-<p>{{ count }}</p>
-<button st-click="increment-count">Increment</button>
-```
+[Counter Example](./static/content/example_counter.md)
 
 ## Random Color Example (with throttle)
 ```html

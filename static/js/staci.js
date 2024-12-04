@@ -158,6 +158,28 @@ class Signal {
   }
 }
 
+// wrap some markdown content in this web component to style it the md content with tailwind
+class StMarkdown extends HTMLElement {
+    constructor() {
+        super();
+    }
+    connectedCallback() {
+        document.addEventListener('DOMContentLoaded', () => {
+            this.classList.add('overflow-hidden', 'rounded')
+            let allElms = this.querySelectorAll('*')
+            Iter.map(allElms, (elm) => {
+                if (elm.tagName == "PRE") {
+                    elm.classList.add('p-4', 'text-sm', 'overflow-x-scroll')
+                }
+                return true
+            })
+        })
+    }
+}
+
+// registering all of our custom elements
+customElements.define("st-markdown", StMarkdown);
+
 // a class to handle dynamic web interactions
 class Staci {
   constructor() {
@@ -219,6 +241,7 @@ class Staci {
       this.initSignalTextPlaceholders();
       this.initSignalAttrPlaceholders();
       this.initRemoveStaciIgnoreFromElements();
+      this.initProvideScrollbarClasses();
     });
   }
 
@@ -368,6 +391,27 @@ class Staci {
         }
         return true
     })
+  }
+
+  initProvideScrollbarClasses() {
+    let elm = document.createElement('style')
+    elm.innerHTML = `
+        <style>
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background-color: #4B5563; /* Gray-600 */
+                border-radius: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background-color: #E5E7EB; /* Gray-200 */
+            }
+        </style>
+    `
+    let head = document.querySelector('head')
+    head.appendChild(elm)
   }
 
   event(name, fn) {
