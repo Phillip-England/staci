@@ -77,45 +77,44 @@ class Iter {
 
 // contains string parsing functions
 class Purse {
-    static scanBetweenSubStrs(s, start, end) {
-        const out = [];
-        let inSearch = false;
-        let searchStr = "";
-        let i = 0;
-      
-        while (i < s.length) {
-          if (
-            !inSearch &&
-            i + start.length <= s.length &&
-            s.substring(i, i + start.length) === start &&
-            (i === 0 || s[i - 1] !== "\\") // Check for preceding escape character
-          ) {
-            inSearch = true;
-            searchStr = start;
-            i += start.length;
-            continue;
-          }
-      
-          if (inSearch) {
-            if (
-              i + end.length <= s.length &&
-              s.substring(i, i + end.length) === end
-            ) {
-              searchStr += end;
-              out.push(searchStr);
-              searchStr = "";
-              inSearch = false;
-              i += end.length;
-              continue;
-            }
-            searchStr += s[i];
-          }
-      
-          i++;
-        }
-        return out;
+  static scanBetweenSubStrs(s, start, end) {
+    const out = [];
+    let inSearch = false;
+    let searchStr = "";
+    let i = 0;
+
+    while (i < s.length) {
+      if (
+        !inSearch &&
+        i + start.length <= s.length &&
+        s.substring(i, i + start.length) === start &&
+        (i === 0 || s[i - 1] !== "\\") // Check for preceding escape character
+      ) {
+        inSearch = true;
+        searchStr = start;
+        i += start.length;
+        continue;
       }
-      
+
+      if (inSearch) {
+        if (
+          i + end.length <= s.length &&
+          s.substring(i, i + end.length) === end
+        ) {
+          searchStr += end;
+          out.push(searchStr);
+          searchStr = "";
+          inSearch = false;
+          i += end.length;
+          continue;
+        }
+        searchStr += s[i];
+      }
+
+      i++;
+    }
+    return out;
+  }
 
   static removeFromArray(array, ...valuesToRemove) {
     return array.filter((item) => !valuesToRemove.includes(item));
@@ -158,27 +157,69 @@ class Signal {
   }
 }
 
-// wrap some markdown content in this web component to style it the md content with tailwind
-class StMarkdown extends HTMLElement {
-    constructor() {
-        super();
-    }
-    connectedCallback() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.classList.add('overflow-hidden', 'rounded')
-            let allElms = this.querySelectorAll('*')
-            Iter.map(allElms, (elm) => {
-                if (elm.tagName == "PRE") {
-                    elm.classList.add('p-4', 'text-sm', 'overflow-x-scroll')
+// provides a st-scollbar class to custom style a scrollbar
+class StScrollbar extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    this.innerHTML = `
+            <style>
+                .st-scrollbar::-webkit-scrollbar {
+                    width: 8px;
+                    height: 8px;
                 }
-                return true
-            })
-        })
-    }
+                .st-scrollbar::-webkit-scrollbar-thumb {
+                    background-color: #4B5563; /* Gray-600 */
+                    border-radius: 4px;
+                }
+                .st-scrollbar::-webkit-scrollbar-track {
+                    background-color: #E5E7EB; /* Gray-200 */
+                }
+            </style>
+        `;
+  }
 }
 
-// registering all of our custom elements
+// wrap some markdown content in this web component to style it the md content with tailwind
+class StMarkdown extends HTMLElement {
+  constructor() {
+    super();
+  }
+  connectedCallback() {
+    document.addEventListener("DOMContentLoaded", () => {
+      this.classList.add("overflow-hidden", "rounded");
+      let allElms = this.querySelectorAll("*");
+      Iter.map(allElms, (elm) => {
+        if (elm.tagName == "PRE") {
+          elm.classList.add(
+            "p-4",
+            "text-sm",
+            "overflow-x-scroll",
+            "st-scrollbar",
+          );
+        }
+        return true;
+      });
+    });
+  }
+}
+
+// staci uses this custom element to determine the placement of signals within the DOM
+class Oo extends HTMLElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.classList.add("invisible");
+  }
+}
+
+// registering all of our custom elements\
+customElements.define("st-scrollbar", StScrollbar);
 customElements.define("st-markdown", StMarkdown);
+customElements.define("o-o", Oo);
 
 // a class to handle dynamic web interactions
 class Staci {
@@ -241,7 +282,6 @@ class Staci {
       this.initSignalTextPlaceholders();
       this.initSignalAttrPlaceholders();
       this.initRemoveStaciIgnoreFromElements();
-      this.initProvideScrollbarClasses();
     });
   }
 
@@ -273,13 +313,13 @@ class Staci {
             let throttle = parseInt(elmThrottle);
             let currentEvents = elm.getAttribute("st-events");
             if (!currentEvents) {
-                elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
-                elm.setAttribute("st-events", eventAttr);
+              elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
+              elm.setAttribute("st-events", eventAttr);
             } else {
-                if (!currentEvents.includes(eventAttr)) {
-                    elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
-                    elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
-                }
+              if (!currentEvents.includes(eventAttr)) {
+                elm.addEventListener(mapsTo, Everest.throttle(event, throttle));
+                elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+              }
             }
             return true;
           }
@@ -294,13 +334,13 @@ class Staci {
             let debounce = parseInt(elmDebounce);
             let currentEvents = elm.getAttribute("st-events");
             if (!currentEvents) {
-                elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
-                elm.setAttribute("st-events", eventAttr);
+              elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
+              elm.setAttribute("st-events", eventAttr);
             } else {
-                if (!currentEvents.includes(eventAttr)) {
-                    elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
-                    elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
-                }
+              if (!currentEvents.includes(eventAttr)) {
+                elm.addEventListener(mapsTo, Everest.debounce(event, debounce));
+                elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+              }
             }
             return true;
           }
@@ -308,13 +348,13 @@ class Staci {
           if (!currentEvents) {
             elm.addEventListener(mapsTo, event);
 
-              elm.setAttribute("st-events", eventAttr);
+            elm.setAttribute("st-events", eventAttr);
           } else {
-              if (!currentEvents.includes(eventAttr)) {
-                elm.addEventListener(mapsTo, event);
+            if (!currentEvents.includes(eventAttr)) {
+              elm.addEventListener(mapsTo, event);
 
-                  elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
-              }
+              elm.setAttribute("st-events", currentEvents + ";" + eventAttr);
+            }
           }
 
           return true;
@@ -340,6 +380,13 @@ class Staci {
           );
         }
         Dom.replaceTextContent(elm, placeholder, signal.val());
+        let classes = elm.classList;
+        Iter.map(classes, (cls) => {
+          if (cls == "invisible") {
+            elm.classList.remove("invisible");
+          }
+          return true;
+        });
         signal.subscribe((oldVal, newVal) => {
           Dom.replaceTextContent(elm, oldVal, newVal);
         });
@@ -385,33 +432,12 @@ class Staci {
   initRemoveStaciIgnoreFromElements() {
     let allElms = document.querySelectorAll("*");
     Iter.map(allElms, (elm) => {
-        let text = Dom.getDirectTextContent(elm)
-        if (text.includes("\\\\")) {
-            Dom.replaceTextContent(elm, "\\\\", "")
-        }
-        return true
-    })
-  }
-
-  initProvideScrollbarClasses() {
-    let elm = document.createElement('style')
-    elm.innerHTML = `
-        <style>
-            .custom-scrollbar::-webkit-scrollbar {
-                width: 8px;
-                height: 8px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-                background-color: #4B5563; /* Gray-600 */
-                border-radius: 4px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-                background-color: #E5E7EB; /* Gray-200 */
-            }
-        </style>
-    `
-    let head = document.querySelector('head')
-    head.appendChild(elm)
+      let text = Dom.getDirectTextContent(elm);
+      if (text.includes("\\\\")) {
+        Dom.replaceTextContent(elm, "\\\\", "");
+      }
+      return true;
+    });
   }
 
   event(name, fn) {
