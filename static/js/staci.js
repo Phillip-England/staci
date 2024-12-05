@@ -42,6 +42,25 @@ class Dom {
     const updatedText = currentText.replace(placeholder, newValue);
     element.textContent = updatedText;
   }
+
+  static ClimbDomUntil(element, callback) {
+    if (!element || typeof callback !== "function") {
+      throw new Error(
+        "Invalid arguments: Provide a valid element and a callback function.",
+      );
+    }
+    let currentElement = element;
+    while (currentElement) {
+      if (callback(currentElement)) {
+        return true;
+      }
+      if (currentElement === document.body) {
+        break;
+      }
+      currentElement = currentElement.parentElement;
+    }
+    return false;
+  }
 }
 
 // contains functions intended to be used to iterate over different types of data
@@ -174,7 +193,7 @@ class StScrollbar extends HTMLElement {
                     border-radius: 4px;
                 }
                 .st-scrollbar::-webkit-scrollbar-track {
-                    background-color: #E5E7EB; /* Gray-200 */
+                    background-color: #1F2937; /* Gray-800 */
                 }
             </style>
         `;
@@ -188,7 +207,7 @@ class StMarkdown extends HTMLElement {
   }
   connectedCallback() {
     document.addEventListener("DOMContentLoaded", () => {
-      this.classList.add("overflow-hidden", "rounded");
+      this.classList.add("overflow-hidden", "flex", "flex-col");
       let allElms = this.querySelectorAll("*");
       Iter.map(allElms, (elm) => {
         if (elm.tagName == "PRE") {
@@ -197,6 +216,39 @@ class StMarkdown extends HTMLElement {
             "text-sm",
             "overflow-x-scroll",
             "st-scrollbar",
+            "rounded",
+            "mb-4",
+          );
+        }
+        if (elm.tagName == "H1") {
+          elm.classList.add(
+            "font-bold",
+            "text-3xl",
+            "pb-4",
+            // "mb-4",
+            // "border-b",
+            // "border-gray-800",
+          );
+        }
+        if (elm.tagName == "P") {
+          elm.classList.add(
+            "text-sm",
+            // "border-b",
+            // "border-gray-800",
+            "pb-4",
+            // "mb-4",
+          );
+        }
+        if (elm.tagName == "H2") {
+          elm.classList.add(
+            "text-2xl",
+            "font-bold",
+            "pb-4",
+            "pt-4",
+            "border-t",
+            "border-gray-800",
+            // "pb-4",
+            // "mb-4",
           );
         }
         return true;
@@ -206,20 +258,20 @@ class StMarkdown extends HTMLElement {
 }
 
 // staci uses this custom element to determine the placement of signals within the DOM
-class Oo extends HTMLElement {
+class StSignal extends HTMLElement {
   constructor() {
     super();
   }
 
   connectedCallback() {
-    this.classList.add("invisible");
+    this.setAttribute("style", "visibility:hidden;");
   }
 }
 
 // registering all of our custom elements\
 customElements.define("st-scrollbar", StScrollbar);
 customElements.define("st-markdown", StMarkdown);
-customElements.define("o-o", Oo);
+customElements.define("st-signal", StSignal);
 
 // a class to handle dynamic web interactions
 class Staci {
@@ -281,7 +333,6 @@ class Staci {
       this.initAllEventTypes();
       this.initSignalTextPlaceholders();
       this.initSignalAttrPlaceholders();
-      this.initRemoveStaciIgnoreFromElements();
     });
   }
 
@@ -367,7 +418,37 @@ class Staci {
 
   initSignalTextPlaceholders() {
     let allElms = document.querySelectorAll("*");
+    let ignoreElms = [];
     Iter.map(allElms, (elm) => {
+      let stIgnore = elm.getAttribute("st-ignore");
+      if (stIgnore == null) {
+        return true;
+      }
+      if (stIgnore == "true") {
+        ignoreElms.push(elm);
+      }
+      return true;
+    });
+    Iter.map(allElms, (elm) => {
+      let hasStIgnoreParent = Dom.ClimbDomUntil(elm, (parent) => {
+        let stIgnoreAttr = parent.getAttribute("st-ignore");
+        if (stIgnoreAttr == null) {
+          return false;
+        }
+        if (stIgnoreAttr == "true") {
+          return true;
+        }
+      });
+      let stForce = elm.getAttribute("st-force");
+      let forceElm = false;
+      if (stForce) {
+        if (stForce == "true") {
+          forceElm = true;
+        }
+      }
+      if (!forceElm && hasStIgnoreParent) {
+        return true;
+      }
       let text = Dom.getDirectTextContent(elm);
       let placeholders = Purse.scanBetweenSubStrs(text, "{{", "}}");
       Iter.map(placeholders, (placeholder) => {
@@ -380,13 +461,13 @@ class Staci {
           );
         }
         Dom.replaceTextContent(elm, placeholder, signal.val());
-        let classes = elm.classList;
-        Iter.map(classes, (cls) => {
-          if (cls == "invisible") {
-            elm.classList.remove("invisible");
-          }
+        let styleAttr = elm.getAttribute("style");
+        if (styleAttr == null) {
           return true;
-        });
+        }
+        if (styleAttr.includes("hidden")) {
+          elm.setAttribute("style", "");
+        }
         signal.subscribe((oldVal, newVal) => {
           Dom.replaceTextContent(elm, oldVal, newVal);
         });
@@ -425,17 +506,6 @@ class Staci {
         });
         return true;
       });
-      return true;
-    });
-  }
-
-  initRemoveStaciIgnoreFromElements() {
-    let allElms = document.querySelectorAll("*");
-    Iter.map(allElms, (elm) => {
-      let text = Dom.getDirectTextContent(elm);
-      if (text.includes("\\\\")) {
-        Dom.replaceTextContent(elm, "\\\\", "");
-      }
       return true;
     });
   }

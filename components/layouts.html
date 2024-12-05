@@ -5,97 +5,45 @@
         <link rel="stylesheet" href="/static/css/output.css" />
         <script src="/static/js/staci.js"></script>
         <title>$prop("title")</title>
+        <st-scrollbar></st-scrollbar>
     </head>
-    <body>
-        <div class="flex flex-col w-full items-center h-full">
-            <div class="flex flex-col xl:w-[50%] md:w-[80%] sm:w-[90%] w-full">
-                <StaciHeader></StaciHeader>
-                <div class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
-                    <h2 class="text-xl font-bold">What is Staci?</h2>
-                    <p class="text-sm">Because you asked.. 🐎</p>
-                    <p class="text-sm">Staci is a lightweight alternative to frameworks like React, Angular, or Vue.</p>
-                </div>
-                <CounterExample></CounterExample>
-                <RandomColorExample></RandomColorExample>
-                <DebounceFormExample></DebounceFormExample>
-            </div>
+    <body class="bg-black h-full text-white">
+        <StaciHeader></StaciHeader>
+        <div class="flex h-[90px] w-full"></div>
+        <div class="p-4">
+            <st-markdown class="custom-scrollbar rounded border-b border-gray-800" st-ignore="true">
+                $md("./static/content/docs.md", "dracula")
+            </st-markdown>
         </div>
+        <PageTurn prev-title="Prev" prev-href="/" prev-hidden="true" next-title="Next" next-href="/signals"></PageTurn>
+        <footer class="p-4 text-sm italic border-t border-gray-800">
+            <p>"M-M-Mama says alligators are so ornery 'cause they got all them teeth and no toothbrush. 🐊" - Adam Sandler, *The Waterboy*</p>
+        </footer>
     </body>
 </html>
 
 
-
-<header _component="StaciHeader" class="sm:m-2 p-4 flex flex-col gap-2 border bg-gray-100 sm:rounded">
-	<h1 class="font-bold text-2xl">Staci</h1>
-	<p class="text-sm">Come visit sometime.. 💄</p>
+<header _component="StaciHeader" class="p-4 flex fixed w-full flex-row justify-between border-b border-gray-800 text-white bg-black h-[90px]">
+    <div class="flex">
+        <div class="flex w-10 items-center justify-center">
+            <img src="/static/img/logo-dark.svg" class="flex h-full">
+        </div>
+    </div>
+	<div class="flex items-center justify-center">
+        <div>
+            <svg class="w-8 h-8 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+            </svg>
+        </div>
+          
+    </div>
 </header>
 
-<div _component="CounterExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
-	<script>
-		staci.signal("count", 0);
-		staci.event("increment-count", () => {
-			let count = staci.getSignal("count");
-			count.set(count.val() + 1);
-		});
-	</script>
-	<div class="flex flex-col gap-2">
-		<h2 class="text-xl font-bold">Counter Example</h2>
-		<p class="text-sm">This example demonstrates how to use signals to update the text content of an element.</p>
-	</div>
-	<p class="text-sm">{{ count }}</p>
-	<button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button>
-    <st-markdown>
-        $md("./static/content/example_counter.md", "dracula")
-    </st-markdown>
-</div>
-
-<div _component="RandomColorExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
-	<script>
-		staci.signal("color", "bg-blue-200");
-		staci.event("set-random-color", () => {
-			let color = staci.getSignal("color");
-			let colors = ["bg-blue-200", "bg-red-200", "bg-yellow-200"];
-			colors = Purse.removeFromArray(colors, color.val());
-			let randomColor =
-				colors[Math.floor(Math.random() * colors.length)];
-			color.set(randomColor);
-		});
-	</script>
-	<div class="flex flex-col gap-2">
-		<h2 class="text-xl font-bold">Random Color Example</h2>
-		<p class="text-sm">This example demonstrates how signals can be used within element attributes.</p>
-	</div>
-	<p class="{{ color }} p-4 rounded text-sm" st-mousemove="set-random-color" st-throttle="80">Enter your mouse here to change the class! I have the class {{ color }}</p>
-	<p class="text-sm">The above example is throttled so the event only fires once every 80ms 🥰</p>
-</div>
-
-<form _component="DebounceFormExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border">
-	<script>
-        staci.signal("error", "I am hidden");
-        staci.signal("errorDisplay", "invisible");
-		staci.event("validate-username", (e) => {
-            let input = e.target;
-            let value = input.value;
-            let err = staci.getSignal("error");
-            let display = staci.getSignal("errorDisplay");
-            if (value == "stacismom") {
-                err.set("great, you did it! 🦄");
-                display.set("flex text-green-700");
-            } else {
-                err.set("the correct username is 'stacismom' you typed: '"+value+"'");
-                display.set("flex text-red-700");
-            }
-		});
-	</script>
-	<div class="flex flex-col gap-2">
-		<h2 class="text-xl font-bold">Form Debounce Example</h2>
-		<p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.
-		</p>
-	</div>
-    <h2 class="text-lg font-bold">Login</h2>
-    <p class="{{ errorDisplay }} text-sm">{{ error }}</p>
-    <div class="flex flex-col gap-2">
-        <label class="text-sm">username</label>
-        <input type="text" class="border p-1 text-xs" st-input="validate-username" st-debounce="250" />
-    </div>
-</form>
+<section _component="PageTurn" class="flex flex-row justify-between p-4">
+    <a _if="prevHidden" class="px-4 py-2 border rounded border-gray-800 text-sm w-[33%] flex items-center justify-center" href="$prop('prevHref')">
+        <h2 class="font-bold text-dracula-yellow">$prop("prevTitle")</h2>
+    </a>
+    <a class="px-4 py-2 border rounded border-gray-800 text-sm w-[33%] flex items-center justify-center" href="$prop('nextHref')">
+        <h2 class="font-bold text-dracula-yellow">$prop("nextTitle")</h2>
+    </a>
+</section>

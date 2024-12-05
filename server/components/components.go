@@ -44,24 +44,16 @@ func Layout(title string) string {
 		staciheaderPlaceholder1 := func() string {
 			return StaciHeader()
 		}
-		counterexamplePlaceholder2 := func() string {
-			return CounterExample()
-		}
-		randomcolorexamplePlaceholder3 := func() string {
-			return RandomColorExample()
-		}
-		debounceformexamplePlaceholder4 := func() string {
-			return DebounceFormExample()
+		pageturnPlaceholder2 := func() string {
+			return PageTurn("/signals", "Next", "/", "Prev", "true")
 		}
 		layoutBuilder.WriteString(`<html _component="Layout" _id="0"><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta charset="UTF-8"/><link rel="stylesheet" href="/static/css/output.css"/><script src="/static/js/staci.js"></script><title>`)
 		layoutBuilder.WriteString(title)
-		layoutBuilder.WriteString(`</title></head><body><div class="flex flex-col w-full items-center h-full"><div class="flex flex-col xl:w-[50%] md:w-[80%] sm:w-[90%] w-full">`)
+		layoutBuilder.WriteString(`</title></head><body class="bg-black h-full text-white"><st-scrollbar></st-scrollbar>`)
 		layoutBuilder.WriteString(staciheaderPlaceholder1())
-		layoutBuilder.WriteString(`<div class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border"><h2 class="text-xl font-bold">What is Staci?</h2><p class="text-sm">Because you asked.. 🐎</p><p class="text-sm">Staci is a lightweight alternative to frameworks like React, Angular, or Vue.</p></div>`)
-		layoutBuilder.WriteString(counterexamplePlaceholder2())
-		layoutBuilder.WriteString(randomcolorexamplePlaceholder3())
-		layoutBuilder.WriteString(debounceformexamplePlaceholder4())
-		layoutBuilder.WriteString(`</div></div></body></html>`)
+		layoutBuilder.WriteString(`<div class="flex h-[90px] w-full"></div><div class="p-4"><st-markdown class="custom-scrollbar rounded border-b border-gray-800" st-ignore="true"><h1 id="staci">Staci</h1><p>drop-in, reactive signals 🤌</p><h2 id="counter-example">Counter Example</h2><button class="bg-black border border-gray-800 w-fit rounded px-2 py-1 mb-4 text-sm text-gray-400"><script>staci.signal("count", 0);staci.event("increment-count", () => {let count = staci.getSignal("count");count.set(count.val() + 1);});</script><span class="pr-4" st-click="increment-count">Increment</span><st-signal st-force="true">{{ count }}</st-signal></button><pre style="color:#f8f8f2;background-color:#282a36;"><code><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>&lt;<span style="color:#ff79c6">script</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    staci.signal(<span style="color:#f1fa8c">&#34;count&#34;</span>, <span style="color:#bd93f9">0</span>);</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    staci.event(<span style="color:#f1fa8c">&#34;increment-count&#34;</span>, () =&gt; {</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>        <span style="color:#8be9fd;font-style:italic">let</span> count <span style="color:#ff79c6">=</span> staci.getSignal(<span style="color:#f1fa8c">&#34;count&#34;</span>);</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        count.set(count.val() <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>);</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    });</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>&lt;/<span style="color:#ff79c6">script</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>&lt;<span style="color:#ff79c6">button</span> <span style="color:#50fa7b">st-click</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;increment-count&#34;</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    &lt;<span style="color:#ff79c6">p</span>&gt;Increment&lt;/<span style="color:#ff79c6">p</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    &lt;<span style="color:#ff79c6">st-signal</span>&gt;{{ count }}&lt;/<span style="color:#ff79c6">st-signal</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>&lt;/<span style="color:#ff79c6">button</span>&gt;</span></span></code></pre><h2 id="use-case">Use-Case</h2><p><code>staci</code> is all about <em>compliementing</em> existing HTML. Other solutions dictate the way you write your HTML. When you want to generate HTML, you must do so <strong>with the framework</strong>.</p><p><code>staci</code> is different. She is not about replacing you&#39;re existing wife__ I mean system. Rather, <code>staci</code> intends to join-in where needed and can be adopted incrementally overtime.</p><h2 id="philosophy">Philosophy</h2><p>Imagine if signals were available natively in the DOM. That is the vibe <code>staci</code> attempts to create.</p><p>Using signals should feel <em>natural</em>.</p><p><img src="/static/img/buddy.jpg" alt="Natural"/></p></st-markdown></div>`)
+		layoutBuilder.WriteString(pageturnPlaceholder2())
+		layoutBuilder.WriteString(`<footer class="p-4 text-sm italic border-t border-gray-800"><p>&#34;M-M-Mama says alligators are so ornery &#39;cause they got all them teeth and no toothbrush. 🐊&#34; - Adam Sandler, *The Waterboy*</p></footer></body></html>`)
 		return layoutBuilder.String()
 	}
 	return gtmlEscape(layout())
@@ -70,36 +62,36 @@ func Layout(title string) string {
 func StaciHeader() string {
 	staciheader := func() string {
 		var staciheaderBuilder strings.Builder
-		staciheaderBuilder.WriteString(`<header _component="StaciHeader" class="sm:m-2 p-4 flex flex-col gap-2 border bg-gray-100 sm:rounded" _id="0"><h1 class="font-bold text-2xl">Staci</h1><p class="text-sm">Come visit sometime.. 💄</p></header>`)
+		staciheaderBuilder.WriteString(`<header _component="StaciHeader" class="p-4 flex fixed w-full flex-row justify-between border-b border-gray-800 text-white bg-black h-[90px]" _id="0"><div class="flex"><div class="flex w-10 items-center justify-center"><img src="/static/img/logo-dark.svg" class="flex h-full"/></div></div><div class="flex items-center justify-center"><div><svg class="w-8 h-8 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg></div></div></header>`)
 		return staciheaderBuilder.String()
 	}
 	return gtmlEscape(staciheader())
 }
 
-func CounterExample() string {
-	counterexample := func() string {
-		var counterexampleBuilder strings.Builder
-		counterexampleBuilder.WriteString(`<div _component="CounterExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border" _id="0"><script>staci.signal("count", 0);staci.event("increment-count", () => {let count = staci.getSignal("count");count.set(count.val() + 1);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Counter Example</h2><p class="text-sm">This example demonstrates how to use signals to update the text content of an element.</p></div><p class="text-sm">{{ count }}</p><button st-click="increment-count" class="border w-fit bg-black text-white rounded px-4 py-2 text-sm">Increment</button><st-markdown><pre style="color:#f8f8f2;background-color:#282a36;"><code><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span>&lt;<span style="color:#ff79c6">script</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>    staci.signal(<span style="color:#f1fa8c">&#34;count&#34;</span>, <span style="color:#bd93f9">0</span>);</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>    staci.event(<span style="color:#f1fa8c">&#34;increment-count&#34;</span>, () =&gt; {</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>        <span style="color:#8be9fd;font-style:italic">let</span> count <span style="color:#ff79c6">=</span> staci.getSignal(<span style="color:#f1fa8c">&#34;count&#34;</span>);</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>        count.set(count.val() <span style="color:#ff79c6">+</span> <span style="color:#bd93f9">1</span>);</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>    });</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>&lt;/<span style="color:#ff79c6">script</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span></span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>&lt;<span style="color:#ff79c6">div</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>    &lt;<span style="color:#ff79c6">h2</span>&gt;Counter Example&lt;/<span style="color:#ff79c6">h2</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>    &lt;<span style="color:#ff79c6">p</span>&gt;\\{{ count }}&lt;/<span style="color:#ff79c6">p</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>    &lt;<span style="color:#ff79c6">button</span> <span style="color:#50fa7b">st-click</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;increment-count&#34;</span>&gt;Increment&lt;/<span style="color:#ff79c6">button</span>&gt;</span></span><span style="display:flex;"><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>&lt;/<span style="color:#ff79c6">div</span>&gt;</span></span></code></pre></st-markdown></div>`)
-		return counterexampleBuilder.String()
+func PageTurn(nextHref string, nextTitle string, prevHref string, prevTitle string, prevHidden bool) string {
+	pageturn := func() string {
+		var pageturnBuilder strings.Builder
+		prevHiddenIf1 := gtmlIf(prevHidden, func() string {
+			var prevHiddenBuilder strings.Builder
+			prevHiddenBuilder.WriteString(`<a _if="prevHidden" class="px-4 py-2 border rounded border-gray-800 text-sm w-[33%] flex items-center justify-center" href="`)
+			prevHiddenBuilder.WriteString(prevHref)
+			prevHiddenBuilder.WriteString(`" _id="1"><h2 class="font-bold text-dracula-yellow">`)
+			prevHiddenBuilder.WriteString(prevTitle)
+			prevHiddenBuilder.WriteString(`</h2></a>`)
+			if prevHidden {
+				return prevHiddenBuilder.String()
+			}
+			return ""
+		})
+		pageturnBuilder.WriteString(`<section _component="PageTurn" class="flex flex-row justify-between p-4" _id="0">`)
+		pageturnBuilder.WriteString(prevHiddenIf1)
+		pageturnBuilder.WriteString(`<a class="px-4 py-2 border rounded border-gray-800 text-sm w-[33%] flex items-center justify-center" href="`)
+		pageturnBuilder.WriteString(nextHref)
+		pageturnBuilder.WriteString(`"><h2 class="font-bold text-dracula-yellow">`)
+		pageturnBuilder.WriteString(nextTitle)
+		pageturnBuilder.WriteString(`</h2></a></section>`)
+		return pageturnBuilder.String()
 	}
-	return gtmlEscape(counterexample())
-}
-
-func RandomColorExample() string {
-	randomcolorexample := func() string {
-		var randomcolorexampleBuilder strings.Builder
-		randomcolorexampleBuilder.WriteString(`<div _component="RandomColorExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border" _id="0"><script>staci.signal("color", "bg-blue-200");staci.event("set-random-color", () => {let color = staci.getSignal("color");let colors = ["bg-blue-200", "bg-red-200", "bg-yellow-200"];colors = Purse.removeFromArray(colors, color.val());let randomColor =colors[Math.floor(Math.random() * colors.length)];color.set(randomColor);});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Random Color Example</h2><p class="text-sm">This example demonstrates how signals can be used within element attributes.</p></div><p class="{{ color }} p-4 rounded text-sm" st-mousemove="set-random-color" st-throttle="80">Enter your mouse here to change the class! I have the class {{ color }}</p><p class="text-sm">The above example is throttled so the event only fires once every 80ms 🥰</p></div>`)
-		return randomcolorexampleBuilder.String()
-	}
-	return gtmlEscape(randomcolorexample())
-}
-
-func DebounceFormExample() string {
-	debounceformexample := func() string {
-		var debounceformexampleBuilder strings.Builder
-		debounceformexampleBuilder.WriteString(`<form _component="DebounceFormExample" class="m-2 p-4 flex gap-4 flex-col bg-gray-100 rounded border" _id="0"><script>staci.signal("error", "I am hidden");staci.signal("errorDisplay", "invisible");staci.event("validate-username", (e) => {let input = e.target;let value = input.value;let err = staci.getSignal("error");let display = staci.getSignal("errorDisplay");if (value == "stacismom") {err.set("great, you did it! 🦄");display.set("flex text-green-700");} else {err.set("the correct username is 'stacismom' you typed: '"+value+"'");display.set("flex text-red-700");}});</script><div class="flex flex-col gap-2"><h2 class="text-xl font-bold">Form Debounce Example</h2><p class="text-sm">This example demonstates how staci can be used to validate form fields with debouncing.</p></div><h2 class="text-lg font-bold">Login</h2><p class="{{ errorDisplay }} text-sm">{{ error }}</p><div class="flex flex-col gap-2"><label class="text-sm">username</label><input type="text" class="border p-1 text-xs" st-input="validate-username" st-debounce="250"/></div></form>`)
-		return debounceformexampleBuilder.String()
-	}
-	return gtmlEscape(debounceformexample())
+	return gtmlEscape(pageturn())
 }
 

@@ -2,7 +2,7 @@ module staci
 
 go 1.23.3
 
-require github.com/Phillip-England/vbf v0.0.16
+require github.com/phillip-england/vbf v0.0.18
 
 require (
 	github.com/Phillip-England/ffh v1.0.11 // indirect
