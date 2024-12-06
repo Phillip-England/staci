@@ -1,7 +1,9 @@
 # What are Signals?
 Signals are points of data located somewhere within the DOM. When a signal's value changes, the value in the DOM will reflect the change automatically.
 
-Put plainly, signals let us go from this:
+Put plainly, signals allow us to bypass using `document.querySelector` and related methods to handle DOM updates.
+
+Signals allow to go from a fine-grained update:
 ```html
 <script>
     let button = document.getElementById('btn');
@@ -21,7 +23,7 @@ Put plainly, signals let us go from this:
 <p id='text' class="text-blue-500">Change my color by clicking</p>
 ```
 
-To this:
+To a reactive model like this:
 ```html
     <script>
         staci.signal('colorClass', 'text-blue-500')
@@ -35,6 +37,6 @@ To this:
         })
     </script>
 
-    <button id='btn' st-click='change-color'>Click!</button>
-    <p id='text' class="{{ colorClass }}">Change my color by clicking</p>
+    <button st-click='change-color'>Click!</button>
+    <p class="{{ colorClass }}">Change my color by clicking</p>
 ```
