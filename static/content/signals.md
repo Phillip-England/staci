@@ -40,3 +40,24 @@ To a reactive model like this:
     <button st-click='change-color'>Click!</button>
     <p class="{{ colorClass }}">Change my color by clicking</p>
 ```
+
+## Creating a Signal
+To create a signal:
+```html
+<script>
+    staci.signal("count", 0)
+</script>
+```
+
+## Mounting a Signal Within the DOM
+To use the signal's value within the DOM, use the `<st-signal>` custom element.
+```html
+<script>
+    staci.signal("count", 0)
+</script>
+<p>
+    <st-signal>{{ count }}</st-signal>
+</p>
+```
+
+> 🚨 Failing to use `<st-signal>` will result in potential bugs when updating the value.
