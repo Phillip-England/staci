@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"staci/server/components"
 
@@ -16,10 +15,14 @@ func main() {
 
 	vbf.AddRoute("/", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
-			vbf.WriteHTML(w, components.Layout("Home Page"))
+			vbf.WriteHTML(w, components.HomePage())
 			return
 		}
-		fmt.Println("hit")
+		vbf.WriteHTML(w, "<h1>404 not found</h1>")
+	}, vbf.MwLogger)
+
+	vbf.AddRoute("/docs/signals", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+		vbf.WriteHTML(w, components.DocSignals())
 	}, vbf.MwLogger)
 
 	vbf.Serve(mux, "8080")
