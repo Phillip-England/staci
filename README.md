@@ -1,4 +1,8 @@
-<img src="/static/img/logo-dark.svg" alt="Logo" width="50" height="auto">
+
+<div>
+    <img src="/static/img/logo-dark.svg" alt="Logo" width="50" height="auto">
+    <h1>Staci</h1>
+</div>
 
 
 # Staci
