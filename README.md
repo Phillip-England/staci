@@ -1,9 +1,8 @@
 # Staci
 drop-in, reactive signals 🤌
 
----------
-
-Read [the docs.](https://staci.dev)
+## The Docs
+Read the docs at [staci.dev](https://staci.dev)
 
 ## Counter Example
 ```html
