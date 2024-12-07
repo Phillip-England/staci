@@ -1,4 +1,5 @@
-![Logo](/static/img/logo-dark.svg)
+<img src="/static/img/logo-dark.svg" alt="Logo" width="200" height="auto">
+
 
 # Staci
 drop-in, reactive signals 🤌
