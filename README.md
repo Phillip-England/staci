@@ -1,13 +1,8 @@
-
-<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-    <img src="/static/img/logo-dark.svg" alt="Logo" width="50" height="auto">
-    <h1>Staci</h1>
-</div>
-
-
-
 # Staci
 drop-in, reactive signals 🤌
+
+## The Docs
+Are found at [staci.dev](https://staci.dev)
 
 ## Counter Example
 ```html
@@ -29,10 +24,3 @@ drop-in, reactive signals 🤌
 `staci` is all about *compliementing* existing HTML. Other solutions dictate the way you write your HTML. When you want to generate HTML, you must do so **with the framework**.
 
 `staci` is different. She is not about replacing you're existing wife__ I mean system. Rather, `staci` intends to join-in where needed and can be adopted incrementally overtime.
-
-## Philosophy
-Imagine if signals were available natively in the DOM. That is the vibe `staci` attempts to create.
-
-Using signals should feel *natural*.
-
-![Natural](/static/img/buddy.jpg)
