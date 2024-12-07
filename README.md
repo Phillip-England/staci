@@ -1,8 +1,9 @@
 
-<div>
+<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
     <img src="/static/img/logo-dark.svg" alt="Logo" width="50" height="auto">
     <h1>Staci</h1>
 </div>
+
 
 
 # Staci
