@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta name="description" content="A brief description of your webpage">
     <meta name="author" content="Your Name">
     <title>{{ .Title }}</title>
@@ -18,7 +18,6 @@
         
         staci.event('toggleNav', (e) => {
             let [navClass, setNavClass] = staci.get('navClass')
-            console.log(navClass)
             let val = Purse.ifElse(navClass, 'hidden', 'flex')
             setNavClass(val)
         })
@@ -41,7 +40,7 @@
         </article>
     </main>
     <title-links target='#article' offset="-90" class="fixed top-[90px] z-50 left-[80%] hidden lg:flex text-sm p-4 gap-2 flex-col text-gray-400"></title-links>
-    <footer class="fixed bottom-0 w-[60%] hidden lg:flex z-30 bg-black border-t border-r flex flex-row justify-between border-gray-800 mx-[20%] p-4 text-sm">
+    <footer class="lg:fixed relative mt-20 lg:mt-0 lg:bottom-0 lg:w-[55%] xl:w-[60%] flex z-30 bg-black border-t border-r flex flex-row justify-between border-gray-800 lg:left-[25%] xl:left-[20%] p-4 text-sm">
         {{ if strEquals .PrevHref "" }}
             <div class="invisible"></div>
         {{ else }}

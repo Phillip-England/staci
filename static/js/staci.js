@@ -49,6 +49,8 @@ class Watcher {
       attributeFilter: ["st-hide"],
     });
   }
+
+
 }
 
 // contains wrapper functions like throttle and debounce to wrap events
@@ -559,13 +561,37 @@ class Staci {
           if (hasExclamation) {
             attrVal = attrVal.replace(placeholder, !signal.val());
             callback = (oldVal, newVal) => {
+                if (typeof(oldVal) == "string" && typeof(newVal) == "string") {
+                    let attrParts = attrVal.split(' ')
+                    attrParts = attrParts.filter((part) => {
+                        if (part == newVal) {
+                            return false
+                        }
+                        return true
+                    })
+                    attrParts.push(...newVal.split(' '))
+                    elm.setAttribute(attrKey, attrParts.join(' '));
+                    return
+                }
                 attrVal = attrVal.replace(!oldVal, !newVal);
                 elm.setAttribute(attrKey, attrVal);
             }
           } else {
             attrVal = attrVal.replace(placeholder, signal.val());
             callback = (oldVal, newVal) => {
-                attrVal = attrVal.replace(" "+oldVal, " "+newVal);
+                if (typeof(oldVal) == "string" && typeof(newVal) == "string") {
+                    let attrParts = attrVal.split(' ')
+                    attrParts = attrParts.filter((part) => {
+                        if (part == oldVal) {
+                            return false
+                        }
+                        return true
+                    })
+                    attrParts.push(...newVal.split(' '))
+                    elm.setAttribute(attrKey, attrParts.join(' '));
+                    return
+                }
+                attrVal = attrVal.replace(oldVal, newVal);
                 elm.setAttribute(attrKey, attrVal);
             }
           }
