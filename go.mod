@@ -11,7 +11,6 @@ require (
 )
 
 require (
-	github.com/Phillip-England/ffh v1.0.11 // indirect
 	github.com/a-h/templ v0.2.771 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
