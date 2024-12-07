@@ -26,18 +26,18 @@ Signals allow to go from a fine-grained updates like this:
 To a more reactive model like this:
 ```html
     <script>
-        staci.signal('colorClass', 'text-blue-500')
-        staci.event('change-color', () => {
-            let color = staci.getSignal('colorClass')
-            if (color.val() == 'text-blue-500') {
-                color.set('text-red-500')
+        staci.set('colorClass', 'text-blue-500')
+        staci.event('changeColor', () => {
+            let [color, setColor] = staci.get('colorClass')
+            if (color == 'text-blue-500') {
+                setColor('text-red-500')
             } else {
-                color.set('text-blue-500')
+                setColor('text-blue-500')
             }
         })
     </script>
 
-    <button st-click='change-color'>Click!</button>
+    <button st-click='changeColor'>Click!</button>
     <p class="{{ colorClass }}">Change my color by clicking</p>
 ```
 
@@ -45,7 +45,7 @@ To a more reactive model like this:
 To create a signal:
 ```html
 <script>
-    staci.signal("count", 0)
+    staci.set("count", 0)
 </script>
 ```
 
@@ -53,7 +53,7 @@ To create a signal:
 To use the signal's value within the DOM, use the `<st-signal>` custom element.
 ```html
 <script>
-    staci.signal("count", 0)
+    staci.set("count", 0)
 </script>
 <p>
     <st-signal>{{ count }}</st-signal>
@@ -66,7 +66,7 @@ To use the signal's value within the DOM, use the `<st-signal>` custom element.
 To use a signal's value within an element's attribut, do this:
 ```html
 <script>
-    staci.signal("display", "hidden")
+    staci.set("display", "hidden")
 </script>
 <p class="{{ display }}">I am hidden!</p>
 ```

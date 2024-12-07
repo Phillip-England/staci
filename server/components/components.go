@@ -127,13 +127,18 @@ func Layout(title string, mdContent string) string {
 		staciheaderPlaceholder1 := func() string {
 			return StaciHeader()
 		}
+		overlayPlaceholder2 := func() string {
+			return Overlay()
+		}
 		layoutBuilder.WriteString(`<html _component="Layout" _id="0"><head><meta name="viewport" content="width=device-width, initial-scale=1"/><meta charset="UTF-8"/><link rel="stylesheet" href="/static/css/output.css"/><script src="/static/js/staci.js"></script><title>`)
 		layoutBuilder.WriteString(title)
-		layoutBuilder.WriteString(`</title></head><body class="bg-black h-full text-white st-scrollbar flex flex-col"><st-scrollbar></st-scrollbar>`)
+		layoutBuilder.WriteString(`</title></head><body class="bg-black h-full text-white st-scrollbar flex flex-col"><st-scrollbar></st-scrollbar><script>staci.set('navOpen', false);staci.set('navClose', true);staci.event('toggleNav', (e) => {let [navOpen, setNavOpen] = staci.get('navOpen');let [navClose, setNavClose] = staci.get('navClose');setNavClose(!navClose);setNavOpen(!navOpen);});</script>`)
 		layoutBuilder.WriteString(staciheaderPlaceholder1())
-		layoutBuilder.WriteString(`<div class="flex-grow pt-[90px]">`)
+		layoutBuilder.WriteString(`<nav class="pt-[90px] fixed border-r border-gray-800 lg:w-[25%] xl:w-[20%] h-full flex"><ul class="flex flex-col gap-4 p-4 w-full text-sm"><li class="rounded border border-gray-800 flex"><a href="/" class="p-4">Home</a></li></ul></nav>`)
+		layoutBuilder.WriteString(overlayPlaceholder2())
+		layoutBuilder.WriteString(`<div class="flex-grow pt-[90px] md:px-[5%] lg:px-[0%] lg:pl-[25%] lg:pr-[20%] xl:pl-[20%] xl:pr-[30%]">`)
 		layoutBuilder.WriteString(mdContent)
-		layoutBuilder.WriteString(`</div><footer class="p-4 text-sm italic border-t border-gray-800"><p>&#34;M-M-Mama says alligators are so ornery &#39;cause they got all them teeth and no toothbrush. 🐊&#34; - Adam Sandler, *The Waterboy*</p></footer></body></html>`)
+		layoutBuilder.WriteString(`</div><footer class="p-4 text-sm italic border-t border-gray-800 bg-black z-30"><p>&#34;M-M-Mama says alligators are so ornery &#39;cause they got all them teeth and no toothbrush. 🐊&#34; - Adam Sandler, *The Waterboy*</p></footer></body></html>`)
 		return layoutBuilder.String()
 	}
 	return gtmlEscape(layout())
@@ -179,7 +184,7 @@ func DocEvents() string {
 			var mdContentBuilder strings.Builder
 			staticcontenteventsmdMd2 := gtmlMd("./static/content/events.md", "dracula")
 			pageturnPlaceholder3 := func() string {
-				return PageTurn("/docs/signals", "Signals", "/docs/events", "??", true, true)
+				return PageTurn("/docs/signals", "Signals", "/docs/observers", "Observers", true, true)
 			}
 			mdContentBuilder.WriteString(`<div class="p-4" st-ignore="true" _slot="mdContent" _id="1">`)
 			mdContentBuilder.WriteString(staticcontenteventsmdMd2)
@@ -192,10 +197,29 @@ func DocEvents() string {
 	return gtmlEscape(layoutPlaceholder0())
 }
 
+func DocObservers() string {
+	layoutPlaceholder0 := func() string {
+		mdContentSlot1 := gtmlSlot(func() string {
+			var mdContentBuilder strings.Builder
+			staticcontentobserversmdMd2 := gtmlMd("./static/content/observers.md", "dracula")
+			pageturnPlaceholder3 := func() string {
+				return PageTurn("/docs/events", "Events", "", "", true, false)
+			}
+			mdContentBuilder.WriteString(`<div class="p-4" st-ignore="true" _slot="mdContent" _id="1">`)
+			mdContentBuilder.WriteString(staticcontentobserversmdMd2)
+			mdContentBuilder.WriteString(pageturnPlaceholder3())
+			mdContentBuilder.WriteString(`</div>`)
+			return mdContentBuilder.String()
+		})
+		return Layout("staci - lightweight, reactive signals 🤌", mdContentSlot1)
+	}
+	return gtmlEscape(layoutPlaceholder0())
+}
+
 func StaciHeader() string {
 	staciheader := func() string {
 		var staciheaderBuilder strings.Builder
-		staciheaderBuilder.WriteString(`<header _component="StaciHeader" class="p-4 flex fixed w-full flex-row justify-between border-b border-gray-800 text-white bg-black h-[90px]" _id="0"><div class="flex"><div class="flex w-10 items-center justify-center"><img src="/static/img/logo-dark.svg" class="flex h-full"/></div></div><div class="flex items-center justify-center"><div><svg class="w-8 h-8 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg></div></div></header>`)
+		staciheaderBuilder.WriteString(`<header _component="StaciHeader" class="p-4 flex bg-black z-30 fixed w-full flex-row justify-between border-b border-gray-800 text-white bg-black h-[90px]" _id="0"><div class="flex"><div class="flex w-10 items-center justify-center"><img src="/static/img/logo-dark.svg" class="flex h-full"/></div></div><div class="flex items-center justify-center"><div st-hide="{{ navOpen }}" st-click="toggleNav"><svg class="w-8 h-8 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path></svg></div><div st-hide="{{ navClose }}" st-click="toggleNav" class="hidden"><svg class="w-8 h-8 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"></path></svg></div></div></header>`)
 		return staciheaderBuilder.String()
 	}
 	return gtmlEscape(staciheader())
@@ -253,5 +277,14 @@ func PageTurn(prevHref string, prevTitle string, nextHref string, nextTitle stri
 		return pageturnBuilder.String()
 	}
 	return gtmlEscape(pageturn())
+}
+
+func Overlay() string {
+	overlay := func() string {
+		var overlayBuilder strings.Builder
+		overlayBuilder.WriteString(`<div _component="Overlay" st-click="toggleNav" class="fixed h-full w-full bg-black opacity-50 hidden" st-hide="{{ navClose }}" _id="0"></div>`)
+		return overlayBuilder.String()
+	}
+	return gtmlEscape(overlay())
 }
 

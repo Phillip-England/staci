@@ -5,7 +5,7 @@ go 1.23.3
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/alecthomas/chroma/v2 v2.14.0
-	github.com/phillip-england/vbf v0.0.18
+	github.com/phillip-england/vbf v0.0.25
 	github.com/yuin/goldmark v1.7.4
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 )

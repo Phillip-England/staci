@@ -1,34 +1,110 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
-	"staci/server/components"
 
 	"github.com/phillip-england/vbf"
 )
 
+const KEY_TEMPLATES = "TEMPLATES"
+
 func main() {
+
 	mux, gCtx := vbf.VeryBestFramework()
 
-	vbf.HandleFavicon(mux)
+	strEquals := func(input string, value string) bool {
+		return input == value
+	}
+
+	funcMap := template.FuncMap{
+		"strEquals": strEquals,
+	}
+
+	templates, err := vbf.ParseTemplates("./templates", funcMap)
+	if err != nil {
+		panic(err)
+	}
+
+	vbf.SetGlobalContext(gCtx, KEY_TEMPLATES, templates)
 	vbf.HandleStaticFiles(mux)
+	vbf.HandleFavicon(mux)
 
-	vbf.AddRoute("/", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+	vbf.AddRoute("GET /", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
-			vbf.WriteHTML(w, components.HomePage())
-			return
+			templates, _ := vbf.GetContext(KEY_TEMPLATES, r).(*template.Template)
+			mdContent, err := vbf.LoadMarkdown("./static/docs/intro.md", "dracula")
+			if err != nil {
+				vbf.WriteString(w, err.Error())
+			}
+			vbf.ExecuteTemplate(w, templates, "root.html", map[string]interface{}{
+				"Title":     "staci - drop-in, reactive signals 🤌",
+				"Content":   template.HTML(mdContent),
+				"ReqPath":   r.URL.Path,
+				"PrevHref":  "",
+				"PrevTitle": "",
+				"NextHref":  "/docs/signals",
+				"NextTitle": "Signals",
+			})
+		} else {
+			vbf.WriteString(w, "404 not found")
 		}
-		vbf.WriteHTML(w, "<h1>404 not found</h1>")
 	}, vbf.MwLogger)
 
-	vbf.AddRoute("/docs/signals", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
-		vbf.WriteHTML(w, components.DocSignals())
+	vbf.AddRoute("GET /docs/signals", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+		templates, _ := vbf.GetContext(KEY_TEMPLATES, r).(*template.Template)
+		mdContent, err := vbf.LoadMarkdown("./static/docs/signals.md", "dracula")
+		if err != nil {
+			vbf.WriteString(w, err.Error())
+		}
+		vbf.ExecuteTemplate(w, templates, "root.html", map[string]interface{}{
+			"Title":     "staci - drop-in, reactive signals 🤌",
+			"Content":   template.HTML(mdContent),
+			"ReqPath":   r.URL.Path,
+			"PrevHref":  "/",
+			"PrevTitle": "Home",
+			"NextHref":  "/docs/events",
+			"NextTitle": "Events",
+		})
 	}, vbf.MwLogger)
 
-	vbf.AddRoute("/docs/events", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
-		vbf.WriteHTML(w, components.DocEvents())
+	vbf.AddRoute("GET /docs/events", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+		templates, _ := vbf.GetContext(KEY_TEMPLATES, r).(*template.Template)
+		mdContent, err := vbf.LoadMarkdown("./static/docs/events.md", "dracula")
+		if err != nil {
+			vbf.WriteString(w, err.Error())
+		}
+		vbf.ExecuteTemplate(w, templates, "root.html", map[string]interface{}{
+			"Title":     "staci - drop-in, reactive signals 🤌",
+			"Content":   template.HTML(mdContent),
+			"ReqPath":   r.URL.Path,
+			"PrevHref":  "/docs/signals",
+			"PrevTitle": "Signals",
+			"NextHref":  "/docs/observers",
+			"NextTitle": "Observers",
+		})
 	}, vbf.MwLogger)
 
-	vbf.Serve(mux, "8080")
+	vbf.AddRoute("GET /docs/observers", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+		templates, _ := vbf.GetContext(KEY_TEMPLATES, r).(*template.Template)
+		mdContent, err := vbf.LoadMarkdown("./static/docs/observers.md", "dracula")
+		if err != nil {
+			vbf.WriteString(w, err.Error())
+		}
+		vbf.ExecuteTemplate(w, templates, "root.html", map[string]interface{}{
+			"Title":     "staci - drop-in, reactive signals 🤌",
+			"Content":   template.HTML(mdContent),
+			"ReqPath":   r.URL.Path,
+			"PrevHref":  "/docs/events",
+			"PrevTitle": "Events",
+			"NextHref":  "",
+			"NextTitle": "",
+		})
+	}, vbf.MwLogger)
+
+	err = vbf.Serve(mux, "8080")
+	if err != nil {
+		panic(err)
+	}
 
 }

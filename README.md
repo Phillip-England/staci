@@ -7,8 +7,8 @@ Read the docs at [staci.dev](https://staci.dev)
 ## Counter Example
 ```html
 <script>
-    staci.signal("count", 0);
-    staci.event("increment-count", () => {
+    staci.setSignal("count", 0);
+    staci.createEvent("increment-count", () => {
         let count = staci.getSignal("count");
         count.set(count.val() + 1);
     });

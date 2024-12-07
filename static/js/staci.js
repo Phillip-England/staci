@@ -1,7 +1,55 @@
-/*
-Codebase Rules
-1. If a function returns a value, it must be wrapped in a Result
-*/
+// contains attribute observers which make making changes to the DOM easier
+class Watcher {
+  static observerStCloak(element) {
+    let callback = (element) => {
+      let stHideAttr = element.getAttribute("st-cloak");
+      if (stHideAttr == "true") {
+        element.style.visibility = "hidden";
+      }
+      if (stHideAttr == "false") {
+        element.style.visibility = "visible";
+      }
+    };
+    callback(element);
+    const observer = new MutationObserver(() => {
+      callback(element);
+    });
+    observer.observe(element, {
+      attributes: true,
+      attributeFilter: ["st-cloak"],
+    });
+  }
+  static observerStHide(element) {
+    const callback = (element) => {
+      let stHideAttr = element.getAttribute("st-hide");
+      if (stHideAttr === "true") {
+        // Stash the current display style if not already stashed
+        if (!element.hasAttribute("st-hide-prev")) {
+          element.setAttribute("st-hide-prev", element.style.display || "");
+        }
+        element.style.display = "none";
+      } else if (stHideAttr === "false") {
+        // Restore the stashed display style
+        let previousDisplay = element.getAttribute("st-hide-prev");
+        element.style.display = previousDisplay || "flex"; // Default to "block" if no stashed value
+      }
+    };
+
+    // Call the callback initially to handle the current state
+    callback(element);
+
+    // Create a MutationObserver to watch for changes in the "st-hide" attribute
+    const observer = new MutationObserver(() => {
+      callback(element);
+    });
+
+    // Start observing the element for changes to the "st-hide" attribute
+    observer.observe(element, {
+      attributes: true,
+      attributeFilter: ["st-hide"],
+    });
+  }
+}
 
 // contains wrapper functions like throttle and debounce to wrap events
 class Everest {
@@ -144,6 +192,17 @@ class Purse {
     const num = Number(str);
     return Number.isInteger(num) && str.trim() !== "";
   }
+
+  static ifElse(value, potential1, potential2) {
+    if (value == potential1) {
+      return potetial2;
+    }
+    if (value == potential2) {
+      return potential1;
+    }
+    console.error("used Purse.ifElse, but function returned a null value");
+    return null;
+  }
 }
 
 // a class to handle signals within our application
@@ -177,22 +236,22 @@ class Signal {
 }
 
 // provides a st-scollbar class to custom style a scrollbar
-class StScrollbar extends HTMLElement {
+class CustomScroll extends HTMLElement {
   constructor() {
     super();
   }
   connectedCallback() {
     this.innerHTML = `
             <style>
-                .st-scrollbar::-webkit-scrollbar {
+                .custom-scroll::-webkit-scrollbar {
                     width: 8px;
                     height: 8px;
                 }
-                .st-scrollbar::-webkit-scrollbar-thumb {
+                .custom-scroll::-webkit-scrollbar-thumb {
                     background-color: #4B5563; /* Gray-600 */
                     border-radius: 4px;
                 }
-                .st-scrollbar::-webkit-scrollbar-track {
+                .custom-scroll::-webkit-scrollbar-track {
                     background-color: #1F2937; /* Gray-800 */
                 }
             </style>
@@ -200,62 +259,56 @@ class StScrollbar extends HTMLElement {
   }
 }
 
-// wrap some markdown content in this web component to style it the md content with tailwind
-class StMarkdown extends HTMLElement {
-  constructor() {
-    super();
-  }
-  connectedCallback() {
-    document.addEventListener("DOMContentLoaded", () => {
-      this.classList.add("overflow-hidden", "flex", "flex-col");
-      let allElms = this.querySelectorAll("*");
-      Iter.map(allElms, (elm) => {
-        if (elm.tagName == "PRE") {
-          elm.classList.add(
-            "p-4",
-            "text-sm",
-            "overflow-x-scroll",
-            "st-scrollbar",
-            "rounded",
-            "mb-4",
-          );
+class TitleLinks extends HTMLElement {
+    constructor() {
+      super();
+    }
+
+    connectedCallback() {
+      const targetSelector = this.getAttribute('target');
+      const offset = parseInt(this.getAttribute('offset'), 10) || 0;
+      
+      const targetElement = document.querySelector(targetSelector);
+      if (!targetElement) {
+        console.error(`Target element "${targetSelector}" not found.`);
+        return;
+      }
+      
+      const headings = targetElement.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+      headings.forEach(heading => {
+        if (heading.id) {
+          const linkItem = document.createElement('div');
+          const link = document.createElement('a');
+          link.classList.add('title-link');
+          link.href = `#${heading.id}`;
+          link.textContent = heading.textContent;
+          linkItem.appendChild(link);
+          this.appendChild(linkItem);
         }
-        if (elm.tagName == "H1") {
-          elm.classList.add(
-            "font-bold",
-            "text-3xl",
-            "pb-4",
-            // "mb-4",
-            // "border-b",
-            // "border-gray-800",
-          );
-        }
-        if (elm.tagName == "P") {
-          elm.classList.add(
-            "text-sm",
-            // "border-b",
-            // "border-gray-800",
-            "pb-4",
-            // "mb-4",
-          );
-        }
-        if (elm.tagName == "H2") {
-          elm.classList.add(
-            "text-2xl",
-            "font-bold",
-            "pb-4",
-            "pt-4",
-            "border-t",
-            "border-gray-800",
-            // "pb-4",
-            // "mb-4",
-          );
-        }
-        return true;
       });
-    });
+
+      // Add styles
+      const style = document.createElement('style');
+      this.appendChild(style);
+
+      // Scroll adjustment with offset when clicking links
+      this.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          e.preventDefault();
+          const targetId = e.target.getAttribute('href').substring(1);
+          const targetElement = document.getElementById(targetId);
+          if (targetElement) {
+            const position = targetElement.getBoundingClientRect().top + window.pageYOffset + offset;
+            window.scrollTo({
+              top: position,
+              behavior: 'smooth'
+            });
+          }
+        }
+      });
+    }
   }
-}
 
 // staci uses this custom element to determine the placement of signals within the DOM
 class StSignal extends HTMLElement {
@@ -268,10 +321,10 @@ class StSignal extends HTMLElement {
   }
 }
 
-// registering all of our custom elements\
-customElements.define("st-scrollbar", StScrollbar);
-customElements.define("st-markdown", StMarkdown);
+// registering all of our custom elements
+customElements.define("custom-scroll", CustomScroll);
 customElements.define("st-signal", StSignal);
+customElements.define("title-links", TitleLinks);
 
 // a class to handle dynamic web interactions
 class Staci {
@@ -333,6 +386,7 @@ class Staci {
       this.initAllEventTypes();
       this.initSignalTextPlaceholders();
       this.initSignalAttrPlaceholders();
+      this.initAttrObservers();
     });
   }
 
@@ -453,7 +507,7 @@ class Staci {
       let placeholders = Purse.scanBetweenSubStrs(text, "{{", "}}");
       Iter.map(placeholders, (placeholder) => {
         let signalKey = placeholder.replace("{{", "").replace("}}", "").trim();
-        let signal = staci.getSignal(signalKey);
+        let signal = staci.getSignalFull(signalKey);
         if (signal == null || signal == undefined) {
           console.error(
             `attempting to set signal values on a {{ }} placeholder, but
@@ -489,14 +543,23 @@ class Staci {
             .replace("{{", "")
             .replace("}}", "")
             .trim();
-          let signal = staci.getSignal(signalKey);
+          let hasExclamation = false;
+          if (signalKey[0] == "!") {
+            signalKey = signalKey.replace("!", "");
+            hasExclamation = true;
+          }
+          let signal = staci.getSignalFull(signalKey);
           if (signal == null || signal == undefined) {
             console.error(
               `attempting to set signal values on a {{ }} placeholder, but
                         we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`,
             );
           }
-          attrVal = attrVal.replace(placeholder, signal.val());
+          if (hasExclamation) {
+            attrVal = attrVal.replace(placeholder, !signal.val());
+          } else {
+            attrVal = attrVal.replace(placeholder, signal.val());
+          }
           elm.setAttribute(attrKey, attrVal);
           signal.subscribe((oldVal, newVal) => {
             attrVal = attrVal.replace(oldVal, newVal);
@@ -510,11 +573,20 @@ class Staci {
     });
   }
 
+  initAttrObservers() {
+    let allElms = document.querySelectorAll("*");
+    Iter.map(allElms, (elm) => {
+      Watcher.observerStHide(elm);
+      Watcher.observerStCloak(elm);
+      return true;
+    });
+  }
+
   event(name, fn) {
     this.events[name] = fn;
   }
 
-  signal(key, val) {
+  set(key, val) {
     this.signals[key] = new Signal(val);
   }
 
@@ -538,7 +610,29 @@ class Staci {
     return event;
   }
 
-  getSignal(key) {
+  get(key) {
+    let foundSignal = false;
+    let signal = null;
+    Iter.mapObj(this.signals, (innerKey, val) => {
+      if (key == innerKey) {
+        foundSignal = true;
+        signal = val;
+        return false;
+      }
+      return true;
+    });
+    if (foundSignal == false) {
+      console.error(
+        `attempted to access signal named ${key} when one does not exist`,
+      );
+      return null;
+    }
+    return [signal.val(), (newVal) => {
+      signal.set(newVal);
+    }];
+  }
+
+  getSignalFull(key) {
     let foundSignal = false;
     let signal = null;
     Iter.mapObj(this.signals, (innerKey, val) => {

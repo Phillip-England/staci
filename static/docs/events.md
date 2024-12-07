@@ -5,10 +5,10 @@ In `staci`, you can create an event using `staci.event("eventName", callback)`. 
 Here, we establish a `signal` and create an `event` to increment the `signal`:
 ```html
 <script>
-  staci.signal("count", 0);
-  staci.event("increment-count", () => {
-    let count = staci.getSignal("count");
-    count.set(count.val() + 1);
+  staci.set("count", 0);
+  staci.event("incrementCount", () => {
+    let [count, setCount] = staci.get("count");
+    setCount(count+1);
   });
 </script>
 ```
