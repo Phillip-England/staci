@@ -38,7 +38,7 @@ To a more reactive model like this:
     </script>
 
     <button st-click='changeColor'>Click!</button>
-    <p class="{{ colorClass }}">Change my color by clicking</p>
+    <p class="{| colorClass |}">Change my color by clicking</p>
 ```
 
 ## Creating a Signal
@@ -56,7 +56,7 @@ To use the signal's value within the DOM, use the `<st-signal>` custom element.
     staci.set("count", 0)
 </script>
 <p>
-    <st-signal>{{ count }}</st-signal>
+    <st-signal>{| count |}</st-signal>
 </p>
 ```
 
@@ -68,5 +68,5 @@ To use a signal's value within an element's attribut, do this:
 <script>
     staci.set("display", "hidden")
 </script>
-<p class="{{ display }}">I am hidden!</p>
+<p class="{| display |}">I am hidden!</p>
 ```
