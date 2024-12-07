@@ -1,7 +1,7 @@
 # Staci
 drop-in, reactive signals 🤌
 
-</hr>
+---------
 
 Read [the docs.](https://staci.dev)
 
