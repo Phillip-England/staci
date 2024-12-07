@@ -1,4 +1,4 @@
-<img src="/static/img/logo-dark.svg" alt="Logo" width="200" height="auto">
+<img src="/static/img/logo-dark.svg" alt="Logo" width="50" height="auto">
 
 
 # Staci
