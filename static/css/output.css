@@ -627,6 +627,10 @@ video {
   display: flex;
 }
 
+.\!flex {
+  display: flex !important;
+}
+
 .hidden {
   display: none;
 }
@@ -892,6 +896,10 @@ video {
 
   .lg\:flex {
     display: flex;
+  }
+
+  .lg\:\!flex {
+    display: flex !important;
   }
 
   .lg\:hidden {

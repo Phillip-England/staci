@@ -195,7 +195,7 @@ class Purse {
 
   static ifElse(value, potential1, potential2) {
     if (value == potential1) {
-      return potetial2;
+      return potential2;
     }
     if (value == potential2) {
       return potential1;
@@ -504,9 +504,9 @@ class Staci {
         return true;
       }
       let text = Dom.getDirectTextContent(elm);
-      let placeholders = Purse.scanBetweenSubStrs(text, "{{", "}}");
+      let placeholders = Purse.scanBetweenSubStrs(text, "{|", "|}");
       Iter.map(placeholders, (placeholder) => {
-        let signalKey = placeholder.replace("{{", "").replace("}}", "").trim();
+        let signalKey = placeholder.replace("{|", "").replace("|}", "").trim();
         let signal = staci.getSignalFull(signalKey);
         if (signal == null || signal == undefined) {
           console.error(
@@ -537,11 +537,11 @@ class Staci {
       Iter.map(elm.attributes, (attr) => {
         let attrKey = attr.name;
         let attrVal = attr.value;
-        let placeholders = Purse.scanBetweenSubStrs(attrVal, "{{", "}}");
+        let placeholders = Purse.scanBetweenSubStrs(attrVal, "{|", "|}");
         Iter.map(placeholders, (placeholder) => {
           let signalKey = placeholder
-            .replace("{{", "")
-            .replace("}}", "")
+            .replace("{|", "")
+            .replace("|}", "")
             .trim();
           let hasExclamation = false;
           if (signalKey[0] == "!") {
@@ -555,16 +555,22 @@ class Staci {
                         we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`,
             );
           }
+          let callback = null
           if (hasExclamation) {
             attrVal = attrVal.replace(placeholder, !signal.val());
+            callback = (oldVal, newVal) => {
+                attrVal = attrVal.replace(!oldVal, !newVal);
+                elm.setAttribute(attrKey, attrVal);
+            }
           } else {
             attrVal = attrVal.replace(placeholder, signal.val());
+            callback = (oldVal, newVal) => {
+                attrVal = attrVal.replace(" "+oldVal, " "+newVal);
+                elm.setAttribute(attrKey, attrVal);
+            }
           }
           elm.setAttribute(attrKey, attrVal);
-          signal.subscribe((oldVal, newVal) => {
-            attrVal = attrVal.replace(oldVal, newVal);
-            elm.setAttribute(attrKey, attrVal);
-          });
+          signal.subscribe(callback);
           return true;
         });
         return true;

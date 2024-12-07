@@ -15,7 +15,7 @@ Use `st-cloak` when you want to hide an element from view, but *wish to perserve
         })
     </script>
     <button st-click='cloakToggle' class='border border-gray-800 text-gray-400 w-fit px-2 py-1 rounded text-sm'>Click to Toggle</button>
-    <p st-cloak="{{ isCloaked }}" class='p-4 rounded text-sm border border-gray-800 text-gray-400'>My placement was perserved!</p>
+    <p st-cloak="{| isCloaked |}" class='p-4 rounded text-sm border border-gray-800 text-gray-400'>My placement was perserved!</p>
 </div>
 
 The code for the above example:
@@ -29,7 +29,7 @@ The code for the above example:
         })
     </script>
     <button st-click='cloakToggle'>Click to Toggle</button>
-    <p st-cloak="{{ isCloaked }}">My placement was perserved!</p>
+    <p st-cloak="{| isCloaked |}">My placement was perserved!</p>
 </div>
 ```
 
@@ -47,7 +47,7 @@ Use `st-hide` when you want an element, along with its placement in the DOM (its
         })
     </script>
     <button st-click='hideToggle' class='border border-gray-800 text-gray-400 w-fit px-2 py-1 rounded text-sm'>Click to Toggle</button>
-    <p st-hide="{{ isHidden }}" class='p-4 rounded text-sm border border-gray-800 text-gray-400'>My placement was not perserved!</p>
+    <p st-hide="{| isHidden |}" class='p-4 rounded text-sm border border-gray-800 text-gray-400'>My placement was not perserved!</p>
 </div>
 
 The code for the above example:
@@ -61,6 +61,6 @@ The code for the above example:
         })
     </script>
     <button st-click='hideToggle'>Click to Toggle</button>
-    <p st-hide="{{ isHidden }}">My placement was not perserved!</p>
+    <p st-hide="{| isHidden |}">My placement was not perserved!</p>
 </div>
 ```

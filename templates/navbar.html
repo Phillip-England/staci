@@ -1,5 +1,5 @@
 {{ define "navbar"}}
-<nav class="w-[70%] fixed left-0 h-full border-r bg-black border-gray-800 flex z-30 top-[90px] text-sm w-[25%] xl:w-[20%] hidden lg:flex">
+<nav class="w-[70%] fixed left-0 h-full border-r bg-black border-gray-800 flex z-30 top-[90px] text-sm w-[25%] xl:w-[20%] {| navClass |} lg:flex">
     <ul class="flex flex-col gap-4 w-full p-2">
         {{ if strEquals .ReqPath "/" }}
             <li class="rounded border border-gray-800 text-dracula-pink flex">

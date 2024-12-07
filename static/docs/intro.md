@@ -11,7 +11,7 @@ drop-in, reactive signals 🤌
         });
     </script>
     <span class='pr-4'>Increment</span>
-    <st-signal st-force='true'>{{ count }}</st-signal>
+    <st-signal st-force='true'>{| count |}</st-signal>
 </button>
 
 ```html
@@ -25,7 +25,7 @@ drop-in, reactive signals 🤌
 
 <button st-click="incrementCount">
     <p>Increment</p>
-    <st-signal>{{ count }}</st-signal>
+    <st-signal>{| count |}</st-signal>
 </button>
 ```
 

@@ -11,6 +11,20 @@
     <custom-scroll></custom-scroll>
 </head>
 <body class="bg-black text-white custom-scroll">
+
+
+    <script>
+        staci.set('navClass', 'hidden')
+        
+        staci.event('toggleNav', (e) => {
+            let [navClass, setNavClass] = staci.get('navClass')
+            console.log(navClass)
+            let val = Purse.ifElse(navClass, 'hidden', 'flex')
+            setNavClass(val)
+        })
+    </script>
+
+
     {{ template "header" }}
     {{ template "navbar" . }}
     {{ template "overlay" }}
