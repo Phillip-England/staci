@@ -3,20 +3,6 @@ drop-in, reactive signals 🤌
 
 ## Counter Example
 ```html
-<button class='bg-black border border-gray-800 w-fit rounded px-2 py-1 mb-4 text-sm text-gray-400' st-click='increment-count'>
-    <script>
-        staci.signal("count", 0);
-        staci.event("increment-count", () => {
-            let count = staci.getSignal("count");
-            count.set(count.val() + 1);
-        });
-    </script>
-    <span class='pr-4'>Increment</span>
-    <st-signal st-force='true'>{{ count }}</st-signal>
-</button>
-```
-
-```html
 <script>
     staci.signal("count", 0);
     staci.event("increment-count", () => {
