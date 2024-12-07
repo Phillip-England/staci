@@ -97,6 +97,23 @@ func main() {
 			"ReqPath":   r.URL.Path,
 			"PrevHref":  "/docs/events",
 			"PrevTitle": "Events",
+			"NextHref":  "/docs/installation",
+			"NextTitle": "Installation",
+		})
+	}, vbf.MwLogger)
+
+	vbf.AddRoute("GET /docs/installation", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+		templates, _ := vbf.GetContext(KEY_TEMPLATES, r).(*template.Template)
+		mdContent, err := vbf.LoadMarkdown("./static/docs/installation.md", "dracula")
+		if err != nil {
+			vbf.WriteString(w, err.Error())
+		}
+		vbf.ExecuteTemplate(w, templates, "root.html", map[string]interface{}{
+			"Title":     "staci - drop-in, reactive signals 🤌",
+			"Content":   template.HTML(mdContent),
+			"ReqPath":   r.URL.Path,
+			"PrevHref":  "/docs/observers",
+			"PrevTitle": "Observers",
 			"NextHref":  "",
 			"NextTitle": "",
 		})

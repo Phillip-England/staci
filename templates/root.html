@@ -27,7 +27,7 @@
     {{ template "header" }}
     {{ template "navbar" . }}
     {{ template "overlay" }}
-    <main class="relative top-[90px] lg:pb-[90px] lg:pl-[25%] xl:pl-[20%] lg:mr-[20%] lg:border-r border-gray-800" st-ignore="true">
+    <main class="relative top-[90px] lg:pb-[90px] lg:pl-[25%] xl:pl-[20%] lg:mr-[20%]" st-ignore="true">
         <div class="flex lg:hidden flex-row gap-4 items-center p-2 border-b border-gray-800">
             <a href="https://github.com/phillip-england/staci">
                 <svg class="w-8 h-8" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -39,8 +39,8 @@
             {{ .Content }}
         </article>
     </main>
-    <title-links target='#article' offset="-90" class="fixed top-[90px] z-50 left-[80%] hidden lg:flex text-sm p-4 gap-2 flex-col text-gray-400"></title-links>
-    <footer class="lg:fixed relative mt-20 lg:mt-0 lg:bottom-0 lg:w-[55%] xl:w-[60%] flex z-30 bg-black border-t border-r flex flex-row justify-between border-gray-800 lg:left-[25%] xl:left-[20%] p-4 text-sm">
+    <title-links target='#article' offset="-90" class="fixed top-[90px] z-50 left-[80%] hidden lg:flex text-sm p-4 gap-2 flex-col text-gray-400 border-l h-full border-gray-800"></title-links>
+    <footer class="lg:fixed relative mt-20 lg:mt-0 lg:bottom-0 lg:w-[55%] xl:w-[60%] flex z-30 bg-black border-t flex flex-row justify-between border-gray-800 lg:left-[25%] xl:left-[20%] p-4 text-sm">
         {{ if strEquals .PrevHref "" }}
             <div class="invisible"></div>
         {{ else }}

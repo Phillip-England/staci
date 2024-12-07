@@ -37,6 +37,15 @@
                 <a href="/docs/observers" class="p-4 cursor-pointer w-full">Observers</a>
             </li>
         {{ end }}
+        {{ if strEquals .ReqPath "/docs/installation" }}
+            <li class="rounded border border-gray-800 text-dracula-pink flex">
+                <a href="/docs/installation" class="p-4 cursor-pointer w-full">Installation</a>
+            </li>
+        {{ else }}
+            <li class="rounded border border-gray-800 flex">
+                <a href="/docs/installation" class="p-4 cursor-pointer w-full">Installation</a>
+            </li>
+        {{ end }}
     </ul>
 </nav>
 {{ end }}
