@@ -1,3 +1,5 @@
+![Logo](/static/img/logo-dark.svg)
+
 # Staci
 drop-in, reactive signals 🤌
 
