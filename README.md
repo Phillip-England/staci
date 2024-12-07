@@ -2,21 +2,21 @@
 drop-in, reactive signals 🤌
 
 ## The Docs
-Read the docs at [staci.dev](https://staci.dev)
+Read the docs at [stacijs.com](https://staci-production.up.railway.app/)
 
 ## Counter Example
 ```html
 <script>
-    staci.setSignal("count", 0);
+    staci.set("count", 0);
     staci.createEvent("increment-count", () => {
-        let count = staci.getSignal("count");
-        count.set(count.val() + 1);
+        let [count, setCount] = staci.get("count");
+        setCount(count + 1);
     });
 </script>
 
 <button st-click="increment-count">
     <p>Increment</p>
-    <st-signal>{{ count }}</st-signal>
+    <st-signal>{| count |}</st-signal>
 </button>
 ```
 
