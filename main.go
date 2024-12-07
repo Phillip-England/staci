@@ -25,6 +25,10 @@ func main() {
 		vbf.WriteHTML(w, components.DocSignals())
 	}, vbf.MwLogger)
 
+	vbf.AddRoute("/docs/events", mux, gCtx, func(w http.ResponseWriter, r *http.Request) {
+		vbf.WriteHTML(w, components.DocEvents())
+	}, vbf.MwLogger)
+
 	vbf.Serve(mux, "8080")
 
 }

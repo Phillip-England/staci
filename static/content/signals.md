@@ -3,7 +3,7 @@ Signals are points of data located somewhere within the DOM. When a signal's val
 
 Put plainly, signals allow us to bypass using `document.querySelector` and related methods to handle DOM updates.
 
-Signals allow to go from a fine-grained update:
+Signals allow to go from a fine-grained updates like this:
 ```html
 <script>
     let button = document.getElementById('btn');
@@ -23,7 +23,7 @@ Signals allow to go from a fine-grained update:
 <p id='text' class="text-blue-500">Change my color by clicking</p>
 ```
 
-To a reactive model like this:
+To a more reactive model like this:
 ```html
     <script>
         staci.signal('colorClass', 'text-blue-500')
@@ -60,4 +60,13 @@ To use the signal's value within the DOM, use the `<st-signal>` custom element.
 </p>
 ```
 
-> 🚨 Failing to use `<st-signal>` will result in potential bugs when updating the value.
+`<st-signal>` is used to ensure the elements value does not flicker placeholders `{{}}` prior to `staci` loading. Also, `<st-signal>` isolates the value from the rest of the text in the elements body so it is more confidently updated.
+
+## Mounting a Signal Within an Attribute
+To use a signal's value within an element's attribut, do this:
+```html
+<script>
+    staci.signal("display", "hidden")
+</script>
+<p class="{{ display }}">I am hidden!</p>
+```

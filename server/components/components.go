@@ -108,7 +108,7 @@ func gtmlMd(mdPath string, theme string) string {
 			if goquery.NodeName(parent) == "pre" {
 				return
 			}
-			inner.SetAttr("style", currentStyle+"font-family: monospace; background-color: #1f2937; padding: 0.25rem 0.5rem; border-radius: 0.25rem;")
+			inner.SetAttr("style", currentStyle+"font-family: monospace; padding: 0.15rem 0.15rem; border-radius: 0.25rem; border: solid #1f2937 1px; font-size: 0.875rem;")
 		case "hr":
 			inner.SetAttr("style", currentStyle+"border: none; border-top: 1px solid #ccc; margin: 2rem 0;")
 		case "a":
@@ -159,8 +159,31 @@ func DocSignals() string {
 		mdContentSlot1 := gtmlSlot(func() string {
 			var mdContentBuilder strings.Builder
 			staticcontentsignalsmdMd2 := gtmlMd("./static/content/signals.md", "dracula")
+			pageturnPlaceholder3 := func() string {
+				return PageTurn("/", "Home", "/docs/events", "Events", true, true)
+			}
 			mdContentBuilder.WriteString(`<div class="p-4" st-ignore="true" _slot="mdContent" _id="1">`)
 			mdContentBuilder.WriteString(staticcontentsignalsmdMd2)
+			mdContentBuilder.WriteString(pageturnPlaceholder3())
+			mdContentBuilder.WriteString(`</div>`)
+			return mdContentBuilder.String()
+		})
+		return Layout("staci - lightweight, reactive signals 🤌", mdContentSlot1)
+	}
+	return gtmlEscape(layoutPlaceholder0())
+}
+
+func DocEvents() string {
+	layoutPlaceholder0 := func() string {
+		mdContentSlot1 := gtmlSlot(func() string {
+			var mdContentBuilder strings.Builder
+			staticcontenteventsmdMd2 := gtmlMd("./static/content/events.md", "dracula")
+			pageturnPlaceholder3 := func() string {
+				return PageTurn("/docs/signals", "Signals", "/docs/events", "??", true, true)
+			}
+			mdContentBuilder.WriteString(`<div class="p-4" st-ignore="true" _slot="mdContent" _id="1">`)
+			mdContentBuilder.WriteString(staticcontenteventsmdMd2)
+			mdContentBuilder.WriteString(pageturnPlaceholder3())
 			mdContentBuilder.WriteString(`</div>`)
 			return mdContentBuilder.String()
 		})
@@ -197,7 +220,7 @@ func PageTurn(prevHref string, prevTitle string, nextHref string, nextTitle stri
 			var showPrevBuilder strings.Builder
 			showPrevBuilder.WriteString(`<div _else="showPrev" _id="2"></div>`)
 			if !showPrev {
-				return showPrevBuilder.String()
+					return showPrevBuilder.String()
 			}
 			return ""
 		})
@@ -217,7 +240,7 @@ func PageTurn(prevHref string, prevTitle string, nextHref string, nextTitle stri
 			var showNextBuilder strings.Builder
 			showNextBuilder.WriteString(`<div _else="showNext" _id="4"></div>`)
 			if !showNext {
-				return showNextBuilder.String()
+					return showNextBuilder.String()
 			}
 			return ""
 		})
