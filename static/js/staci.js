@@ -205,6 +205,14 @@ class Purse {
     console.error("used Purse.ifElse, but function returned a null value");
     return null;
   }
+
+
+  static removeDuplicates(arr) {
+    return [...new Set(arr)];
+    }
+
+
+
 }
 
 // a class to handle signals within our application
@@ -560,6 +568,9 @@ class Staci {
           let callback = null
           if (hasExclamation) {
             attrVal = attrVal.replace(placeholder, !signal.val());
+            let parts = attrVal.split(" ")
+            parts = Purse.removeDuplicates(parts)
+            attrVal = parts.join(' ')
             callback = (oldVal, newVal) => {
                 if (typeof(oldVal) == "string" && typeof(newVal) == "string") {
                     let attrParts = attrVal.split(' ')
@@ -578,6 +589,9 @@ class Staci {
             }
           } else {
             attrVal = attrVal.replace(placeholder, signal.val());
+            let parts = attrVal.split(" ")
+            parts = Purse.removeDuplicates(parts)
+            attrVal = parts.join(' ')
             callback = (oldVal, newVal) => {
                 if (typeof(oldVal) == "string" && typeof(newVal) == "string") {
                     let attrParts = attrVal.split(' ')

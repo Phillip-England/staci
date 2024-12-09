@@ -40,17 +40,7 @@
         </article>
     </main>
     <title-links target='#article' offset="-90" class="fixed top-[90px] z-50 left-[80%] hidden lg:flex text-sm p-4 gap-2 flex-col text-gray-400 border-l h-full border-gray-800"></title-links>
-    <footer class="lg:fixed relative mt-20 lg:mt-0 lg:bottom-0 lg:w-[55%] xl:w-[60%] flex z-30 bg-black border-t flex flex-row justify-between border-gray-800 lg:left-[25%] xl:left-[20%] p-4 text-sm">
-        {{ if strEquals .PrevHref "" }}
-            <div class="invisible"></div>
-        {{ else }}
-            <a href="{{ .PrevHref }}" class="flex items-center justify-center rounded p-4 border border-gray-800 text-dracula-yellow w-[33%]">{{ .PrevTitle }}</a>
-        {{ end }}
-        {{ if strEquals .NextHref "" }}
-            <div class="invisible"></div>
-        {{ else }}
-            <a href="{{ .NextHref }}" class="flex items-center justify-center rounded p-4 border border-gray-800 text-dracula-yellow w-[33%]">{{ .NextTitle }}</a>
-        {{ end }}
-    </footer>
+    {{ template "footer" . }}
+    <div class="h-[50px]"></div>
 </body>
 </html>
