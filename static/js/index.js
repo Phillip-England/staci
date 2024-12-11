@@ -723,12 +723,41 @@ class Staci {
             }
           };
           signal.subscribe(callback);
+          this.initElementReel(elm, signal);
           return true;
         });
         return true;
       });
       return true;
     });
+  }
+  initElementReel(elm, signal) {
+    let attrs = elm.attributes;
+    let stDelay = "0";
+    let stReel = "60";
+    let foundReel = false;
+    for (let i = 0; i < attrs.length; i++) {
+      let attr = attrs[i];
+      if (attr.name == "st-reel") {
+        foundReel = true;
+      }
+      let delay = elm.getAttribute("st-delay");
+      if (delay != null) {
+        stDelay = delay;
+      }
+      stReel = elm.getAttribute("st-reel");
+    }
+    if (foundReel) {
+      window.addEventListener("DOMContentLoaded", () => {
+        let delayint = parseInt(stDelay);
+        let reelint = parseInt(stReel);
+        setTimeout(() => {
+          setInterval(() => {
+            signal.next();
+          }, reelint);
+        }, delayint);
+      });
+    }
   }
   event(name, fn) {
     this.events[name] = fn;
@@ -780,11 +809,7 @@ class Staci {
 
 // index.ts
 var staci = new Staci();
-var sig = staci.signal("navClass", "hidden").opposite("flex");
+var sig = staci.signal("navClass", "hidden").states(["flex"]);
 staci.event("toggleNav", () => {
-  if (sig.val() == "hidden") {
-    sig.set("flex");
-  } else {
-    sig.set("hidden");
-  }
+  sig.next();
 });

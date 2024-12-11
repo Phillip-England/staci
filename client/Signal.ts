@@ -47,7 +47,7 @@ export class SignalStr implements ISignal {
   }
 
   next(): void {
-    if (this.signalStates.length > 1) {
+      if (this.signalStates.length > 1) {
       const currentIndex = this.signalStates.indexOf(this.value);
       const nextIndex = (currentIndex + 1) % this.signalStates.length;
       const oldVal = this.value;

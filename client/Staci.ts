@@ -68,6 +68,7 @@ export class Staci {
       }
     });
   }
+
   init(): Result<null, string> {
     let result = this.initAllEventTypes();
     if (result.isErr()) {
@@ -80,6 +81,7 @@ export class Staci {
     this.initSignalAttrPlaceholders();
     return Result.Ok(null);
   }
+
   initAllEventTypes(): Result<null, string> {
     let potResult = null;
     Iter.map<[string, string]>(
@@ -100,6 +102,7 @@ export class Staci {
     }
     return Result.Ok(null);
   }
+
   initEventsOfType(eventAttr: string, mapsTo: string): Result<null, string> {
     Iter.mapObj<() => void>(this.events, (key, val) => {
       let subElms = Dom.qsa(`*[${eventAttr}]`);
@@ -182,6 +185,7 @@ export class Staci {
     });
     return Result.Ok(null);
   }
+
   initSignalTextPlaceholders(): Result<null, string> {
     let allElms = Dom.qsa("*");
     let ignoreElms = [];
@@ -274,6 +278,7 @@ export class Staci {
     });
     return Result.Ok(null);
   }
+
   initSignalAttrPlaceholders() {
     let allElms = Dom.qsa("*");
     Iter.map<HTMLElement>(allElms, (i, elm) => {
@@ -352,6 +357,7 @@ export class Staci {
             oldVal: string | boolean | number,
             newVal: string | boolean | number,
           ) => {
+            // hainvg trouble with replacements
             if (hasExclamation) {
               attrVal = attrVal.replace(
                 prechars + newVal + postchars,
@@ -367,6 +373,7 @@ export class Staci {
             }
           };
           signal.subscribe(callback);
+          this.initElementReel(elm, signal)
           return true;
         });
         return true;
@@ -375,9 +382,40 @@ export class Staci {
     });
   }
 
+  initElementReel(elm: HTMLElement, signal: ISignal) {
+        let attrs = elm.attributes
+        let stDelay = "0"
+        let stReel = "60"
+        let foundReel = false
+        for (let i = 0; i < attrs.length; i++) {
+            let attr = attrs[i]
+            if (attr.name == "st-reel") {
+                foundReel = true
+            }
+            let delay = elm.getAttribute('st-delay')
+            if (delay != null) {
+                stDelay = delay
+            }
+            stReel = elm.getAttribute('st-reel') as string
+        }
+        if (foundReel) {
+            window.addEventListener('DOMContentLoaded', () => {
+                let delayint = parseInt(stDelay)
+                let reelint = parseInt(stReel)
+                // console err if delay int is not a number and exit the func
+                setTimeout(() => {
+                    setInterval(() => {
+                        signal.next()
+                    }, reelint)
+                }, delayint)
+            })
+        }
+  }
+
   event(name: string, fn: () => void) {
     this.events[name] = fn;
   }
+
   getEvent(key: string): () => void {
     let event = this.events[key];
     if (event == undefined) {
@@ -387,12 +425,14 @@ export class Staci {
     }
     return event;
   }
+
   hydrate() {
     let result = this.initAllEventTypes();
     if (result.isErr()) {
       console.error(result.getErr());
     }
   }
+
   signal(name: string, value: any) {
     let result = Signal.New(value);
     if (result.isErr()) {
@@ -402,6 +442,7 @@ export class Staci {
     this.signals[name] = sig;
     return sig;
   }
+
   getSignalFull(key: string): ISignal | null {
     let foundSignal = false;
     let signal = null;
@@ -421,4 +462,5 @@ export class Staci {
     }
     return signal;
   }
+
 }
