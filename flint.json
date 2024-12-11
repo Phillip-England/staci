@@ -1,0 +1,14 @@
+{
+  "host": "http://localhost:8080",
+  "static": "./static",
+  "favicon": "./favicon.ico",
+  "out": "./out",
+  "target": "https://stacijs.com",
+  "routes": [
+    "/",
+    "/docs/signals",
+    "/docs/events",
+    "/docs/observers",
+    "/docs/installation"
+  ]
+}
