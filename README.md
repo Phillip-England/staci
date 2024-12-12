@@ -4,7 +4,7 @@ drop-in, reactive signals 🤌
 
 ## The Docs
 
-Read the docs at [stacijs.com](https://staci-production.up.railway.app/)
+Read the docs at [stacijs.com](https://stacijs.com)
 
 ## Counter Example
 

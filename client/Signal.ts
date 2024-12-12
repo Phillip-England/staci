@@ -5,27 +5,33 @@ export const keySignalBool = "KeySignalBool";
 export const keySignalInt = "KeySignalInt";
 
 export interface ISignal {
+  name: string;
   value: any;
   type: string;
   signalStates: any[];
   states: (signalStates: any[]) => ISignal;
   next: () => void;
   set: (newValue: any) => void;
+  toggle: () => void;
   subscribe: (callback: (oldVal: any, newVal: any) => void) => () => void;
   iter: (framerate: number) => ISignal;
   val: () => any;
+  str: () => string;
+  getOppositeVal: () => Result<any, string>;
   oppositeValue: any;
   opposite: (val: any) => ISignal;
 }
 
 export class SignalStr implements ISignal {
+  name: string;
   value: string;
   type: string;
   signalStates: string[];
   oppositeValue: any;
   private listeners: Set<(oldVal: string, newVal: string) => void>;
 
-  constructor(value: string) {
+  constructor(name: string, value: string) {
+    this.name = name;
     this.value = value;
     this.type = keySignalStr;
     this.signalStates = [value];
@@ -46,8 +52,18 @@ export class SignalStr implements ISignal {
     }
   }
 
+  toggle(): void {
+    if (this.oppositeValue !== null) {
+      const oldVal = this.value;
+      const temp = this.value;
+      this.value = this.oppositeValue;
+      this.oppositeValue = temp;
+      this.notify(oldVal, this.value);
+    }
+  }
+
   next(): void {
-      if (this.signalStates.length > 1) {
+    if (this.signalStates.length > 1) {
       const currentIndex = this.signalStates.indexOf(this.value);
       const nextIndex = (currentIndex + 1) % this.signalStates.length;
       const oldVal = this.value;
@@ -74,6 +90,19 @@ export class SignalStr implements ISignal {
     return this.value;
   }
 
+  str(): string {
+    return this.value.toString();
+  }
+
+  getOppositeVal(): Result<any, string> {
+    if (this.oppositeValue !== null) {
+      return Result.Ok(this.oppositeValue);
+    }
+    return Result.Err(
+      `signal ${this.name} does not have an opposite value set.`,
+    );
+  }
+
   opposite(val: any): ISignal {
     this.oppositeValue = val;
     return this;
@@ -85,13 +114,15 @@ export class SignalStr implements ISignal {
 }
 
 export class SignalBool implements ISignal {
+  name: string;
   value: boolean;
   type: string;
   signalStates: boolean[];
   oppositeValue: any;
   private listeners: Set<(oldVal: boolean, newVal: boolean) => void>;
 
-  constructor(value: boolean) {
+  constructor(name: string, value: boolean) {
+    this.name = name;
     this.value = value;
     this.type = keySignalBool;
     this.signalStates = [value, !value];
@@ -109,6 +140,16 @@ export class SignalBool implements ISignal {
       const oldVal = this.value;
       this.value = newValue;
       this.notify(oldVal, newValue);
+    }
+  }
+
+  toggle(): void {
+    if (this.oppositeValue !== null) {
+      const oldVal = this.value;
+      const temp = this.value;
+      this.value = this.oppositeValue;
+      this.oppositeValue = temp;
+      this.notify(oldVal, this.value);
     }
   }
 
@@ -136,6 +177,19 @@ export class SignalBool implements ISignal {
     return this.value;
   }
 
+  str(): string {
+    return this.value.toString();
+  }
+
+  getOppositeVal(): Result<any, string> {
+    if (this.oppositeValue !== null) {
+      return Result.Ok(this.oppositeValue);
+    }
+    return Result.Err(
+      `signal ${this.name} does not have an opposite value set.`,
+    );
+  }
+
   opposite(val: any): ISignal {
     this.oppositeValue = val;
     return this;
@@ -147,13 +201,15 @@ export class SignalBool implements ISignal {
 }
 
 export class SignalInt implements ISignal {
+  name: string;
   value: number;
   type: string;
   signalStates: number[];
   oppositeValue: any;
   private listeners: Set<(oldVal: number, newVal: number) => void>;
 
-  constructor(value: number) {
+  constructor(name: string, value: number) {
+    this.name = name;
     this.value = value;
     this.type = keySignalInt;
     this.signalStates = [value];
@@ -171,6 +227,16 @@ export class SignalInt implements ISignal {
       const oldVal = this.value;
       this.value = newValue;
       this.notify(oldVal, newValue);
+    }
+  }
+
+  toggle(): void {
+    if (this.oppositeValue !== null) {
+      const oldVal = this.value;
+      const temp = this.value;
+      this.value = this.oppositeValue;
+      this.oppositeValue = temp;
+      this.notify(oldVal, this.value);
     }
   }
 
@@ -202,6 +268,19 @@ export class SignalInt implements ISignal {
     return this.value;
   }
 
+  str(): string {
+    return this.value.toString();
+  }
+
+  getOppositeVal(): Result<any, string> {
+    if (this.oppositeValue !== null) {
+      return Result.Ok(this.oppositeValue);
+    }
+    return Result.Err(
+      `signal ${this.name} does not have an opposite value set.`,
+    );
+  }
+
   opposite(val: any): ISignal {
     this.oppositeValue = val;
     return this;
@@ -213,15 +292,15 @@ export class SignalInt implements ISignal {
 }
 
 export class Signal {
-  static New(value: any): Result<ISignal, string> {
+  static New(name: string, value: any): Result<ISignal, string> {
     if (typeof value == "boolean") {
-      return Result.Ok(new SignalBool(value));
+      return Result.Ok(new SignalBool(name, value));
     }
     if (typeof value == "string") {
-      return Result.Ok(new SignalStr(value));
+      return Result.Ok(new SignalStr(name, value));
     }
     if (typeof value == "number") {
-      return Result.Ok(new SignalInt(value));
+      return Result.Ok(new SignalInt(name, value));
     }
     return Result.Err(`value '${value}' does not link to a valid signal`);
   }

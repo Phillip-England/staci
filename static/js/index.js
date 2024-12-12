@@ -41,7 +41,7 @@ class Result {
 // client/Iter.ts
 class Iter {
   static map(items, fn) {
-    for (let i = 0; i < items.length; i++) {
+    for (let i = 0;i < items.length; i++) {
       if (!fn(i, items[i])) {
         break;
       }
@@ -63,16 +63,18 @@ var keySignalBool = "KeySignalBool";
 var keySignalInt = "KeySignalInt";
 
 class SignalStr {
+  name;
   value;
   type;
   signalStates;
   oppositeValue;
   listeners;
-  constructor(value) {
+  constructor(name, value) {
+    this.name = name;
     this.value = value;
     this.type = keySignalStr;
     this.signalStates = [value];
-    this.listeners = new Set();
+    this.listeners = new Set;
     this.oppositeValue = null;
   }
   states(signalStates) {
@@ -84,6 +86,15 @@ class SignalStr {
       const oldVal = this.value;
       this.value = newValue;
       this.notify(oldVal, newValue);
+    }
+  }
+  toggle() {
+    if (this.oppositeValue !== null) {
+      const oldVal = this.value;
+      const temp = this.value;
+      this.value = this.oppositeValue;
+      this.oppositeValue = temp;
+      this.notify(oldVal, this.value);
     }
   }
   next() {
@@ -110,6 +121,15 @@ class SignalStr {
   val() {
     return this.value;
   }
+  str() {
+    return this.value.toString();
+  }
+  getOppositeVal() {
+    if (this.oppositeValue !== null) {
+      return Result.Ok(this.oppositeValue);
+    }
+    return Result.Err(`signal ${this.name} does not have an opposite value set.`);
+  }
   opposite(val) {
     this.oppositeValue = val;
     return this;
@@ -120,16 +140,18 @@ class SignalStr {
 }
 
 class SignalBool {
+  name;
   value;
   type;
   signalStates;
   oppositeValue;
   listeners;
-  constructor(value) {
+  constructor(name, value) {
+    this.name = name;
     this.value = value;
     this.type = keySignalBool;
     this.signalStates = [value, !value];
-    this.listeners = new Set();
+    this.listeners = new Set;
     this.oppositeValue = !value;
   }
   states(signalStates) {
@@ -141,6 +163,15 @@ class SignalBool {
       const oldVal = this.value;
       this.value = newValue;
       this.notify(oldVal, newValue);
+    }
+  }
+  toggle() {
+    if (this.oppositeValue !== null) {
+      const oldVal = this.value;
+      const temp = this.value;
+      this.value = this.oppositeValue;
+      this.oppositeValue = temp;
+      this.notify(oldVal, this.value);
     }
   }
   next() {
@@ -163,6 +194,15 @@ class SignalBool {
   val() {
     return this.value;
   }
+  str() {
+    return this.value.toString();
+  }
+  getOppositeVal() {
+    if (this.oppositeValue !== null) {
+      return Result.Ok(this.oppositeValue);
+    }
+    return Result.Err(`signal ${this.name} does not have an opposite value set.`);
+  }
   opposite(val) {
     this.oppositeValue = val;
     return this;
@@ -173,16 +213,18 @@ class SignalBool {
 }
 
 class SignalInt {
+  name;
   value;
   type;
   signalStates;
   oppositeValue;
   listeners;
-  constructor(value) {
+  constructor(name, value) {
+    this.name = name;
     this.value = value;
     this.type = keySignalInt;
     this.signalStates = [value];
-    this.listeners = new Set();
+    this.listeners = new Set;
     this.oppositeValue = null;
   }
   states(signalStates) {
@@ -194,6 +236,15 @@ class SignalInt {
       const oldVal = this.value;
       this.value = newValue;
       this.notify(oldVal, newValue);
+    }
+  }
+  toggle() {
+    if (this.oppositeValue !== null) {
+      const oldVal = this.value;
+      const temp = this.value;
+      this.value = this.oppositeValue;
+      this.oppositeValue = temp;
+      this.notify(oldVal, this.value);
     }
   }
   next() {
@@ -220,6 +271,15 @@ class SignalInt {
   val() {
     return this.value;
   }
+  str() {
+    return this.value.toString();
+  }
+  getOppositeVal() {
+    if (this.oppositeValue !== null) {
+      return Result.Ok(this.oppositeValue);
+    }
+    return Result.Err(`signal ${this.name} does not have an opposite value set.`);
+  }
   opposite(val) {
     this.oppositeValue = val;
     return this;
@@ -230,15 +290,15 @@ class SignalInt {
 }
 
 class Signal {
-  static New(value) {
+  static New(name, value) {
     if (typeof value == "boolean") {
-      return Result.Ok(new SignalBool(value));
+      return Result.Ok(new SignalBool(name, value));
     }
     if (typeof value == "string") {
-      return Result.Ok(new SignalStr(value));
+      return Result.Ok(new SignalStr(name, value));
     }
     if (typeof value == "number") {
-      return Result.Ok(new SignalInt(value));
+      return Result.Ok(new SignalInt(name, value));
     }
     return Result.Err(`value '${value}' does not link to a valid signal`);
   }
@@ -249,7 +309,7 @@ class Dom {
   static qsa(selector) {
     let elements = document.querySelectorAll(selector);
     let arr = [];
-    for (let i = 0; i < elements.length; i++) {
+    for (let i = 0;i < elements.length; i++) {
       arr.push(elements[i]);
     }
     return arr;
@@ -274,9 +334,7 @@ class Dom {
   }
   static ClimbDomUntil(element, callback) {
     if (!element || typeof callback !== "function") {
-      throw new Error(
-        "Invalid arguments: Provide a valid element and a callback function.",
-      );
+      throw new Error("Invalid arguments: Provide a valid element and a callback function.");
     }
     let currentElement = element;
     while (currentElement) {
@@ -296,7 +354,7 @@ class Dom {
 class Everest {
   static throttle(func, delay) {
     let lastTime = 0;
-    return function (...args) {
+    return function(...args) {
       const now = Date.now();
       if (now - lastTime >= delay) {
         lastTime = now;
@@ -306,7 +364,7 @@ class Everest {
   }
   static debounce(func, delay) {
     let timeout = null;
-    return function (...args) {
+    return function(...args) {
       if (timeout !== null) {
         clearTimeout(timeout);
       }
@@ -326,20 +384,14 @@ class Purse {
     let searchStr = "";
     let i = 0;
     while (i < s.length) {
-      if (
-        !inSearch && i + start.length <= s.length &&
-        s.substring(i, i + start.length) === start &&
-        (i === 0 || s[i - 1] !== "\\")
-      ) {
+      if (!inSearch && i + start.length <= s.length && s.substring(i, i + start.length) === start && (i === 0 || s[i - 1] !== "\\")) {
         inSearch = true;
         searchStr = start;
         i += start.length;
         continue;
       }
       if (inSearch) {
-        if (
-          i + end.length <= s.length && s.substring(i, i + end.length) === end
-        ) {
+        if (i + end.length <= s.length && s.substring(i, i + end.length) === end) {
           searchStr += end;
           out.push(searchStr);
           searchStr = "";
@@ -357,9 +409,8 @@ class Purse {
     return array.filter((item) => !valuesToRemove.includes(item));
   }
   static strIsInt(str) {
-    if (typeof str !== "string") {
+    if (typeof str !== "string")
       return false;
-    }
     const num = Number(str);
     return Number.isInteger(num) && str.trim() !== "";
   }
@@ -385,6 +436,7 @@ class Staci {
   events;
   signals;
   eventPairs;
+  forbiddenAttrs;
   constructor() {
     this.version = "0.0.2";
     this.repo = "https://github.com/phillip-england/staci";
@@ -432,7 +484,16 @@ class Staci {
       ["st-drop", "drop"],
       ["st-input", "input"],
       ["st-keydown", "keydown"],
-      ["st-keyup", "keyup"],
+      ["st-keyup", "keyup"]
+    ];
+    this.forbiddenAttrs = [
+      "st-throttle",
+      "st-debounce",
+      "st-delay",
+      "st-reel",
+      "st-force",
+      "st-ignore",
+      "st-events"
     ];
     document.addEventListener("DOMContentLoaded", () => {
       let result = this.init();
@@ -450,7 +511,10 @@ class Staci {
     if (result.isErr()) {
       return result;
     }
-    this.initSignalAttrPlaceholders();
+    result = this.initSignalAttrPlaceholders();
+    if (result.isErr()) {
+      return result;
+    }
     return Result.Ok(null);
   }
   initAllEventTypes() {
@@ -492,17 +556,13 @@ class Staci {
             shouldDebounce = true;
           }
           if (shouldDebounce && shouldThrottle) {
-            console.error(
-              `element ${elm} found with both st-throttle and st-decounce, only one allowed per element`,
-            );
+            console.error(`element ${elm} found with both st-throttle and st-decounce, only one allowed per element`);
           }
           if (shouldThrottle) {
             elmThrottle = elmThrottle;
             let throttle = parseInt(elmThrottle);
             if (isNaN(throttle)) {
-              console.error(
-                `element ${elm} found with st-throttle, but the passed in value ${throttle} cannot be parsed to an int`,
-              );
+              console.error(`element ${elm} found with st-throttle, but the passed in value ${throttle} cannot be parsed to an int`);
             }
             let currentEvents2 = elm.getAttribute("st-events");
             if (!currentEvents2) {
@@ -519,9 +579,7 @@ class Staci {
             elmDebounce = elmDebounce;
             let debounce = parseInt(elmDebounce);
             if (isNaN(debounce)) {
-              console.error(
-                `element ${elm} found with st-debounce, but the passed in value ${debounce} cannot be parsed to an int`,
-              );
+              console.error(`element ${elm} found with st-debounce, but the passed in value ${debounce} cannot be parsed to an int`);
             }
             let currentEvents2 = elm.getAttribute("st-events");
             if (!currentEvents2) {
@@ -537,9 +595,11 @@ class Staci {
           let currentEvents = elm.getAttribute("st-events");
           if (!currentEvents) {
             elm.addEventListener(mapsTo, event);
+            elm.setAttribute("st-events", eventAttr);
           } else {
             if (!currentEvents.includes(eventAttr)) {
               elm.addEventListener(mapsTo, event);
+              elm.setAttribute("st-events", currentEvents + ":" + eventAttr);
             }
           }
           return true;
@@ -589,17 +649,14 @@ class Staci {
           let prechars = text.slice(index - 2, index);
           let len = placeholder.length;
           let postchars = text.slice(index + len, index + len + 2);
-          let signalKey = placeholder.replace("{|", "").replace("|}", "")
-            .trim();
+          let signalKey = placeholder.replace("{|", "").replace("|}", "").trim();
           let signal = this.getSignalFull(signalKey);
           if (signal == null) {
             return true;
           }
           if (signal == null || signal == undefined) {
-            console.error(
-              `attempting to set signal values on a {{ }} placeholder, but
-                        we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`,
-            );
+            console.error(`attempting to set signal values on a {{ }} placeholder, but
+                        we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`);
           }
           Dom.replaceTextContent(elm2, placeholder, signal.val());
           let styleAttr = elm2.getAttribute("style");
@@ -625,11 +682,7 @@ class Staci {
             return true;
           });
           signal.subscribe((oldVal, newVal) => {
-            Dom.replaceTextContent(
-              elm2,
-              prechars + oldVal + postchars,
-              prechars + newVal + postchars,
-            );
+            Dom.replaceTextContent(elm2, prechars + oldVal + postchars, prechars + newVal + postchars);
           });
           return true;
         });
@@ -641,102 +694,77 @@ class Staci {
   }
   initSignalAttrPlaceholders() {
     let allElms = Dom.qsa("*");
-    Iter.map(allElms, (i, elm) => {
-      Iter.map(elm.attributes, (i2, attr) => {
-        let attrKey = attr.name;
-        let attrVal = attr.value;
-        let placeholders = Purse.scanBetweenSubStrs(attrVal, "{|", "|}");
-        Iter.map(placeholders, (i3, placeholder) => {
-          let signalKey = placeholder.replace("{|", "").replace("|}", "")
-            .trim();
-          let hasExclamation = false;
-          if (signalKey[0] == "!") {
-            signalKey = signalKey.replace("!", "");
-            hasExclamation = true;
-          }
-          let signal = this.getSignalFull(signalKey);
-          if (signal == null || signal == undefined) {
-            console.error(
-              `attempting to set signal values on a {| |} placeholder, but
-                  we encountered a null signal from using the key ${signalKey} and placeholder ${placeholder}`,
-            );
-            return false;
-          }
-          let index = 0;
-          let prechars = "";
-          let postchars = "";
-          if (hasExclamation) {
-            if (signal.type == keySignalStr || signal.type == keySignalInt) {
-              if (signal.oppositeValue == null) {
-                console.error(
-                  `used an exclamation on a string/int signal with no opposite, in order to use {| !signalName |} on a string, you must declare it's opposite`,
-                );
-              }
-            }
-            let parts = attrVal.split(" ");
-            if (parts.includes(signal.oppositeValue)) {
-              attrVal = attrVal.replace(placeholder, "").trim();
-            } else {
-              attrVal = attrVal.replace(placeholder, signal.oppositeValue);
-              index = attrVal.indexOf(signal.oppositeValue);
-              prechars = attrVal.slice(index - 2, index);
-              let strVal = String(signal.oppositeValue);
-              let len = strVal.length - 1;
-              if (index + len + 2 > attrVal.length) {
-                postchars = attrVal.slice(index + len, -1);
-              } else {
-                postchars = attrVal.slice(index + len, index + len + 2);
-              }
-              console.log(attrVal);
-            }
-          } else {
-            let parts = attrVal.split(" ");
-            if (parts.includes(signal.val())) {
-              attrVal = attrVal.replace(placeholder, "").trim();
-            } else {
-              attrVal = attrVal.replace(placeholder, signal.val());
-              index = attrVal.indexOf(signal.val());
-              prechars = attrVal.slice(index - 2, index);
-              let strVal = String(signal.val());
-              let len = strVal.length - 1;
-              if (index + len + 2 > attrVal.length) {
-                postchars = attrVal.slice(index + len, -1);
-              } else {
-                postchars = attrVal.slice(index + len, index + len + 2);
-              }
-            }
-          }
-          elm.setAttribute(attrKey, attrVal);
-          let callback = (oldVal, newVal) => {
-            if (hasExclamation) {
-              attrVal = attrVal.replace(
-                prechars + newVal + postchars,
-                prechars + oldVal + postchars,
-              );
-              elm.setAttribute(attrKey, attrVal);
-            } else {
-              attrVal = attrVal.replace(
-                prechars + oldVal + postchars,
-                prechars + newVal + postchars,
-              );
-              elm.setAttribute(attrKey, attrVal);
-            }
-          };
-          signal.subscribe(callback);
-          this.initElementReel(elm, signal);
-          return true;
-        });
-        return true;
+    for (let i = 0;i < allElms.length; i++) {
+      let elm = allElms[i];
+      let result = this.initSignalAttrPlaceholder(elm);
+      if (result.isErr()) {
+        return result;
+      }
+    }
+    return Result.Ok(null);
+  }
+  initSignalAttrPlaceholder(elm) {
+    let attrs = elm.attributes;
+    for (let i = 0;i < attrs.length; i++) {
+      let attr = attrs[i];
+      let result = this.initReplaceSignalPlaceholderInAttr(attr, elm);
+      if (result.isErr()) {
+        return result;
+      }
+    }
+    return Result.Ok(null);
+  }
+  initReplaceSignalPlaceholderInAttr(attr, elm) {
+    if (this.isForbiddenAttr(attr)) {
+      return Result.Ok(null);
+    }
+    if (attr.name.slice(0, 3) != "st-") {
+      return Result.Ok(null);
+    }
+    let targetAttr = attr.name.slice(3, attr.name.length);
+    let targetValue = elm.getAttribute(targetAttr);
+    if (targetValue == null) {
+      targetValue = "";
+    }
+    elm.setAttribute(`og-${targetAttr}`, targetValue);
+    let signalKeys = attr.value.split(" ");
+    let signalValues = [];
+    for (let i = 0;i < signalKeys.length; i++) {
+      let hasExclamation = false;
+      let signalKey = signalKeys[i];
+      if (signalKey[0] == "!") {
+        hasExclamation = true;
+        signalKey = signalKey.replace("!", "");
+      }
+      let signal = this.getSignalFull(signalKey);
+      if (signal == null) {
+        return Result.Err(`attempted to utilize signal named ${signalKey} in element ${elm} but the signal does not exist`);
+      }
+      if (hasExclamation) {
+        let result = signal.getOppositeVal();
+        if (result.isErr()) {
+          return result;
+        }
+        let val = result.unwrap();
+        signalValues.push(val);
+      } else {
+        signalValues.push(signal.val());
+      }
+      signal.subscribe((oldVal, newVal) => {
+        this.signalAttrSubMethod(signal.name, oldVal, newVal);
       });
-      return true;
-    });
+    }
+    signalValues = Purse.removeDuplicates(signalValues);
+    let combined = signalValues.join(" ");
+    elm.setAttribute(targetAttr, targetValue + " " + combined);
+    return Result.Ok(null);
   }
   initElementReel(elm, signal) {
     let attrs = elm.attributes;
     let stDelay = "0";
     let stReel = "60";
     let foundReel = false;
-    for (let i = 0; i < attrs.length; i++) {
+    for (let i = 0;i < attrs.length; i++) {
       let attr = attrs[i];
       if (attr.name == "st-reel") {
         foundReel = true;
@@ -759,15 +787,79 @@ class Staci {
       });
     }
   }
+  signalAttrSubMethod(signalName, oldVal, newVal) {
+    let allElms = Dom.qsa("*");
+    for (let i = 0;i < allElms.length; i++) {
+      let elm = allElms[i];
+      for (let i2 = 0;i2 < elm.attributes.length; i2++) {
+        let attr = elm.attributes[i2];
+        if (this.isForbiddenAttr(attr)) {
+          continue;
+        }
+        if (attr.name.slice(0, 3) != "st-") {
+          continue;
+        }
+        let attrParts = attr.value.split(" ");
+        let stAttr = "";
+        for (let i3 = 0;i3 < attrParts.length; i3++) {
+          let part = attrParts[i3];
+          if (part == signalName || part == "!" + signalName) {
+            stAttr = attr.name;
+            break;
+          }
+        }
+        if (stAttr == "") {
+          console.error(`tried to use signalAttrSubMethod on signal named ${signalName} but this signal could not be found in any st-attributes`);
+        }
+        let targetAttr = stAttr.replace("st-", "");
+        let ogAttr = stAttr.replace("st-", "og-");
+        let signalKeys = elm.getAttribute(stAttr);
+        if (signalKeys == null) {
+          console.error(`no signal keys were found in attribute ${stAttr} in element ${elm}`);
+          return;
+        }
+        let signalValues = [];
+        let parts = signalKeys.split(" ");
+        for (let i3 = 0;i3 < parts.length; i3++) {
+          let hasExclamation = false;
+          let signalKey = parts[i3];
+          if (signalKey[0] == "!") {
+            hasExclamation = true;
+            signalKey = signalKey.replace("!", "");
+          }
+          let signal = this.getSignalFull(signalKey);
+          if (signal == null) {
+            return;
+          }
+          if (hasExclamation) {
+            let result = signal.getOppositeVal();
+            if (result.isErr()) {
+              return result;
+            }
+            let val = result.unwrap();
+            signalValues.push(val);
+          } else {
+            signalValues.push(signal.val());
+          }
+          console.log(signal);
+        }
+        signalValues = Purse.removeDuplicates(signalValues);
+        let combined = signalValues.join(" ");
+        let ogValue = elm.getAttribute(ogAttr);
+        if (ogValue == null) {
+          ogValue = "";
+        }
+        elm.setAttribute(targetAttr, ogValue + " " + combined);
+      }
+    }
+  }
   event(name, fn) {
     this.events[name] = fn;
   }
   getEvent(key) {
     let event = this.events[key];
     if (event == undefined) {
-      console.error(
-        `tried to access and event named ${key} which does not exist`,
-      );
+      console.error(`tried to access and event named ${key} which does not exist`);
     }
     return event;
   }
@@ -778,7 +870,7 @@ class Staci {
     }
   }
   signal(name, value) {
-    let result = Signal.New(value);
+    let result = Signal.New(name, value);
     if (result.isErr()) {
       console.error(result.getErr());
     }
@@ -798,18 +890,31 @@ class Staci {
       return true;
     });
     if (foundSignal == false) {
-      console.error(
-        `attempted to access signal named ${key} when one does not exist`,
-      );
+      console.error(`attempted to access signal named ${key} when one does not exist`);
       return null;
     }
     return signal;
   }
+  isForbiddenAttr(attr) {
+    let forbidden = this.forbiddenAttrs;
+    for (let i = 0;i < this.eventPairs.length; i++) {
+      let pair = this.eventPairs[i];
+      forbidden.push(pair[0]);
+    }
+    for (let i = 0;i < forbidden.length; i++) {
+      let forbiddenAttr = forbidden[i];
+      if (attr.name == forbiddenAttr) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 // index.ts
-var staci = new Staci();
-var sig = staci.signal("navClass", "hidden").states(["flex"]);
+var staci = new Staci;
+var sig = staci.signal("navClass", "hidden").opposite("flex");
+var sig2 = staci.signal("navClass2", "border border-black").states(["border border-red"]);
 staci.event("toggleNav", () => {
-  sig.next();
+  sig.toggle();
 });
