@@ -436,7 +436,6 @@ class Staci {
   events;
   signals;
   eventPairs;
-  forbiddenAttrs;
   constructor() {
     this.version = "0.0.2";
     this.repo = "https://github.com/phillip-england/staci";
@@ -485,15 +484,6 @@ class Staci {
       ["st-input", "input"],
       ["st-keydown", "keydown"],
       ["st-keyup", "keyup"]
-    ];
-    this.forbiddenAttrs = [
-      "st-throttle",
-      "st-debounce",
-      "st-delay",
-      "st-reel",
-      "st-force",
-      "st-ignore",
-      "st-events"
     ];
     document.addEventListener("DOMContentLoaded", () => {
       let result = this.init();
@@ -707,56 +697,39 @@ class Staci {
     let attrs = elm.attributes;
     for (let i = 0;i < attrs.length; i++) {
       let attr = attrs[i];
-      let result = this.initReplaceSignalPlaceholderInAttr(attr, elm);
-      if (result.isErr()) {
-        return result;
+      let placeholders = Purse.scanBetweenSubStrs(attr.value, "{|", "|}");
+      if (placeholders.length == 0) {
+        continue;
       }
-    }
-    return Result.Ok(null);
-  }
-  initReplaceSignalPlaceholderInAttr(attr, elm) {
-    if (this.isForbiddenAttr(attr)) {
-      return Result.Ok(null);
-    }
-    if (attr.name.slice(0, 3) != "st-") {
-      return Result.Ok(null);
-    }
-    let targetAttr = attr.name.slice(3, attr.name.length);
-    let targetValue = elm.getAttribute(targetAttr);
-    if (targetValue == null) {
-      targetValue = "";
-    }
-    elm.setAttribute(`og-${targetAttr}`, targetValue);
-    let signalKeys = attr.value.split(" ");
-    let signalValues = [];
-    for (let i = 0;i < signalKeys.length; i++) {
-      let hasExclamation = false;
-      let signalKey = signalKeys[i];
-      if (signalKey[0] == "!") {
-        hasExclamation = true;
-        signalKey = signalKey.replace("!", "");
-      }
-      let signal = this.getSignalFull(signalKey);
-      if (signal == null) {
-        return Result.Err(`attempted to utilize signal named ${signalKey} in element ${elm} but the signal does not exist`);
-      }
-      if (hasExclamation) {
-        let result = signal.getOppositeVal();
-        if (result.isErr()) {
-          return result;
+      for (let i2 = 0;i2 < placeholders.length; i2++) {
+        let placeholder = placeholders[i2];
+        let index = attr.value.indexOf(placeholder);
+        console.log(index);
+        let prechars = attr.value.slice(index - 2, index);
+        let len = attr.value.length;
+        let postchars = attr.value.slice(index + len, index + len + 2);
+        let signalKey = placeholder.replace("{|", "").replace("|}", "").trim();
+        let hasExclamation = false;
+        if (signalKey[0] == "!") {
+          hasExclamation = true;
+          signalKey = signalKey.replace("!", "");
         }
-        let val = result.unwrap();
-        signalValues.push(val);
-      } else {
-        signalValues.push(signal.val());
+        let signal = this.getSignalFull(signalKey);
+        if (signal == null) {
+          return Result.Err(`tried to access signal named ${signalKey} but it does not exist`);
+        }
+        if (hasExclamation) {
+          let opposite = signal.getOppositeVal();
+          if (opposite.isErr()) {
+            return opposite;
+          }
+          elm.setAttribute(attr.name, attr.value.replace(placeholder, opposite.unwrap()));
+        } else {
+          elm.setAttribute(attr.name, attr.value.replace(prechars + placeholder + postchars, " " + signal.val()));
+        }
+        console.log(prechars, postchars);
       }
-      signal.subscribe((oldVal, newVal) => {
-        this.signalAttrSubMethod(signal.name, oldVal, newVal);
-      });
     }
-    signalValues = Purse.removeDuplicates(signalValues);
-    let combined = signalValues.join(" ");
-    elm.setAttribute(targetAttr, targetValue + " " + combined);
     return Result.Ok(null);
   }
   initElementReel(elm, signal) {
@@ -785,72 +758,6 @@ class Staci {
           }, reelint);
         }, delayint);
       });
-    }
-  }
-  signalAttrSubMethod(signalName, oldVal, newVal) {
-    let allElms = Dom.qsa("*");
-    for (let i = 0;i < allElms.length; i++) {
-      let elm = allElms[i];
-      for (let i2 = 0;i2 < elm.attributes.length; i2++) {
-        let attr = elm.attributes[i2];
-        if (this.isForbiddenAttr(attr)) {
-          continue;
-        }
-        if (attr.name.slice(0, 3) != "st-") {
-          continue;
-        }
-        let attrParts = attr.value.split(" ");
-        let stAttr = "";
-        for (let i3 = 0;i3 < attrParts.length; i3++) {
-          let part = attrParts[i3];
-          if (part == signalName || part == "!" + signalName) {
-            stAttr = attr.name;
-            break;
-          }
-        }
-        if (stAttr == "") {
-          console.error(`tried to use signalAttrSubMethod on signal named ${signalName} but this signal could not be found in any st-attributes`);
-        }
-        let targetAttr = stAttr.replace("st-", "");
-        let ogAttr = stAttr.replace("st-", "og-");
-        let signalKeys = elm.getAttribute(stAttr);
-        if (signalKeys == null) {
-          console.error(`no signal keys were found in attribute ${stAttr} in element ${elm}`);
-          return;
-        }
-        let signalValues = [];
-        let parts = signalKeys.split(" ");
-        for (let i3 = 0;i3 < parts.length; i3++) {
-          let hasExclamation = false;
-          let signalKey = parts[i3];
-          if (signalKey[0] == "!") {
-            hasExclamation = true;
-            signalKey = signalKey.replace("!", "");
-          }
-          let signal = this.getSignalFull(signalKey);
-          if (signal == null) {
-            return;
-          }
-          if (hasExclamation) {
-            let result = signal.getOppositeVal();
-            if (result.isErr()) {
-              return result;
-            }
-            let val = result.unwrap();
-            signalValues.push(val);
-          } else {
-            signalValues.push(signal.val());
-          }
-          console.log(signal);
-        }
-        signalValues = Purse.removeDuplicates(signalValues);
-        let combined = signalValues.join(" ");
-        let ogValue = elm.getAttribute(ogAttr);
-        if (ogValue == null) {
-          ogValue = "";
-        }
-        elm.setAttribute(targetAttr, ogValue + " " + combined);
-      }
     }
   }
   event(name, fn) {
@@ -894,20 +801,6 @@ class Staci {
       return null;
     }
     return signal;
-  }
-  isForbiddenAttr(attr) {
-    let forbidden = this.forbiddenAttrs;
-    for (let i = 0;i < this.eventPairs.length; i++) {
-      let pair = this.eventPairs[i];
-      forbidden.push(pair[0]);
-    }
-    for (let i = 0;i < forbidden.length; i++) {
-      let forbiddenAttr = forbidden[i];
-      if (attr.name == forbiddenAttr) {
-        return true;
-      }
-    }
-    return false;
   }
 }
 
